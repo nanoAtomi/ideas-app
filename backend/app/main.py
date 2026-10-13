@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from .api import me
+from .api import admin, ideas, me
 from .config import settings
 from .db import run_migrations
 
@@ -63,6 +63,8 @@ def health() -> dict:
 
 
 app.include_router(me.router)
+app.include_router(ideas.router)
+app.include_router(admin.router)
 
 
 @app.api_route("/api/{path:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE"], include_in_schema=False)
