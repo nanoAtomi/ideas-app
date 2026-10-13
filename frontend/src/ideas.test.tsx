@@ -98,7 +98,9 @@ describe('ideas', () => {
     const user = userEvent.setup();
     renderApp('/submit');
     expect(await screen.findByRole('heading', { name: 'What problem bugs you?' })).toBeInTheDocument();
-    expect(screen.getByText('Nudge')).toBeInTheDocument();
+    // The nudge stays folded until asked for.
+    await user.click(screen.getByRole('button', { name: /Stuck\? Get a nudge/ }));
+    expect(screen.getByRole('button', { name: /Another/ })).toBeInTheDocument();
     const next = screen.getByRole('button', { name: 'Next →' });
     expect(next).toBeDisabled();
 
@@ -114,13 +116,28 @@ describe('ideas', () => {
     await user.click(screen.getByRole('button', { name: 'Skip' }));
     expect(screen.getByRole('heading', { name: 'Who may see your idea?' })).toBeInTheDocument();
     await user.click(screen.getByRole('checkbox', { name: /Show anonymously/ }));
+    await user.click(screen.getByRole('button', { name: 'Next →' }));
+
+    // Summary: every answer, each can be changed and leads back here.
+    expect(screen.getByRole('heading', { name: 'All good?' })).toBeInTheDocument();
+    expect(screen.getByText('Plants keep dying')).toBeInTheDocument();
+    expect(screen.getAllByText('skipped')).toHaveLength(3);
+    expect(screen.getByText(/On the board · 🙈 Anonymous/)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Change answer: Who has this problem?' }));
+    const audience = screen.getByRole('textbox', { name: 'Who has this problem?' });
+    await user.clear(audience);
+    await user.type(audience, 'Plant parents');
+    await user.click(screen.getByRole('button', { name: '✓ Back to summary' }));
+    expect(screen.getByText('Plant parents')).toBeInTheDocument();
+    // Earlier steps stay reachable through the step dots.
+    expect(screen.getByRole('button', { name: 'Step 1: Problem' })).toBeEnabled();
     await user.click(screen.getByRole('button', { name: '💡 Send idea' }));
 
     expect(await screen.findByRole('heading', { name: 'Thanks! Your idea has arrived.' })).toBeInTheDocument();
     const post = fetchMock.mock.calls.find(([url, init]) => url === '/api/ideas' && init?.method === 'POST')!;
     expect(JSON.parse(post[1].body)).toEqual({
       problem: 'Plants keep dying',
-      audience: 'Flatmates',
+      audience: 'Plant parents',
       frequency: 'weekly',
       helps: null,
       name_idea: null,

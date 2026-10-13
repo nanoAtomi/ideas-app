@@ -42,18 +42,26 @@
   },
   "wizard": {
     "progress": "Schritt {{step}} von {{total}}",
-    "required": "Die eine Pflichtfrage",
-    "optional": "Optional – überspringen ist okay",
     "back": "Zurück",
     "next": "Weiter",
     "skip": "Überspringen",
     "send": "Idee abschicken",
     "sendFailed": "Das hat nicht geklappt. Deine Antworten sind noch da – versuch's gleich nochmal.",
-    "nudge": "Denkanstoß",
     "anotherNudge": "Noch einer",
     "thanksTitle": "Danke! Deine Idee ist angekommen.",
     "thanksText": "Unter „Meine Ideen“ siehst du, ob sie angeschaut, geplant oder schon gebaut wird.",
-    "another": "Noch eine Idee"
+    "another": "Noch eine Idee",
+    "optionalBadge": "optional",
+    "nudgeToggle": "Kein Plan? Hol dir einen Denkanstoß",
+    "stepNav": "Fragen",
+    "goTo": "Schritt {{n}}: {{question}}",
+    "reviewStep": "Übersicht",
+    "reviewTitle": "Alles richtig so?",
+    "reviewLead": "Hier sind alle deine Antworten. Mit ✏️ änderst du eine, danach geht's zurück hierher.",
+    "edit": "Ändern",
+    "editAnswer": "Antwort ändern: {{question}}",
+    "skipped": "übersprungen",
+    "backToReview": "Zur Übersicht"
   },
   "steps": {
     "problem": {
@@ -66,7 +74,8 @@
         "Welche Zettelwirtschaft oder Excel-Liste ist bei dir heimlich eine App?",
         "Was vergisst du immer wieder?",
         "Wofür schreibst du dir Erinnerungen in den Chat mit dir selbst?"
-      ]
+      ],
+      "short": "Problem"
     },
     "audience": {
       "question": "Wer hat das Problem?",
@@ -84,7 +93,8 @@
         "Denk an Familie, WG, Verein oder Kollegen.",
         "Wem würdest du die App als Erstes zeigen?",
         "Wer hätte das Problem auch – wenn er nur wüsste, dass es lösbar ist?"
-      ]
+      ],
+      "short": "Wer"
     },
     "frequency": {
       "question": "Wie oft passiert das?",
@@ -92,7 +102,8 @@
       "nudges": [
         "Auch Seltenes kann nerven – Steuererklärung, anyone?",
         "Denk an die letzte Woche: Wie oft war's?"
-      ]
+      ],
+      "short": "Wie oft"
     },
     "helps": {
       "question": "Wie würde eine App dir helfen?",
@@ -102,7 +113,8 @@
         "Stell dir vor, die App gibt's schon. Was tippst du als Erstes an?",
         "Soll sie erinnern, rechnen, sammeln, teilen – oder was ganz anderes?",
         "Was soll sie auf keinen Fall tun?"
-      ]
+      ],
+      "short": "Wie helfen"
     },
     "name": {
       "question": "Hast du schon einen Namen?",
@@ -111,7 +123,8 @@
       "nudges": [
         "Wie würdest du die App deinen Freunden gegenüber nennen?",
         "Ein Emoji sagt manchmal mehr als drei Wörter."
-      ]
+      ],
+      "short": "Name"
     },
     "details": {
       "question": "Erzähl, was du willst",
@@ -121,14 +134,16 @@
         "Gibt es eine App, die es fast kann? Was fehlt ihr?",
         "Was wäre das kleine Extra, das dich begeistern würde?",
         "Wie sähe der perfekte Montagmorgen mit der App aus?"
-      ]
+      ],
+      "short": "Mehr"
     },
     "visibility": {
       "question": "Wer darf deine Idee sehen?",
       "hint": "Kannst du später jederzeit ändern.",
       "nudges": [
         "Auf dem Board können andere mitstimmen – das zeigt mir, was gefragt ist."
-      ]
+      ],
+      "short": "Sichtbarkeit"
     }
   },
   "frequency": {

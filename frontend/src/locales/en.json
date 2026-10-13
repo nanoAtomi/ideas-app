@@ -42,18 +42,26 @@
   },
   "wizard": {
     "progress": "Step {{step}} of {{total}}",
-    "required": "The one required question",
-    "optional": "Optional – skipping is fine",
     "back": "Back",
     "next": "Next",
     "skip": "Skip",
     "send": "Send idea",
     "sendFailed": "That didn't work. Your answers are still here – try again in a moment.",
-    "nudge": "Nudge",
     "anotherNudge": "Another",
     "thanksTitle": "Thanks! Your idea has arrived.",
     "thanksText": "Under \"My ideas\" you'll see whether it gets looked at, planned or built.",
-    "another": "Another idea"
+    "another": "Another idea",
+    "optionalBadge": "optional",
+    "nudgeToggle": "Stuck? Get a nudge",
+    "stepNav": "Questions",
+    "goTo": "Step {{n}}: {{question}}",
+    "reviewStep": "Summary",
+    "reviewTitle": "All good?",
+    "reviewLead": "Here are all your answers. Change one with ✏️, then you come back here.",
+    "edit": "Change",
+    "editAnswer": "Change answer: {{question}}",
+    "skipped": "skipped",
+    "backToReview": "Back to summary"
   },
   "steps": {
     "problem": {
@@ -66,7 +74,8 @@
         "Which pile of notes or spreadsheet is secretly an app?",
         "What do you keep forgetting?",
         "What do you send yourself reminders about in a chat with yourself?"
-      ]
+      ],
+      "short": "Problem"
     },
     "audience": {
       "question": "Who has this problem?",
@@ -84,7 +93,8 @@
         "Think of family, flatmates, your club or colleagues.",
         "Who would you show the app to first?",
         "Who else has this problem – if only they knew it could be solved?"
-      ]
+      ],
+      "short": "Who"
     },
     "frequency": {
       "question": "How often does it happen?",
@@ -92,7 +102,8 @@
       "nudges": [
         "Rare things can be annoying too – tax return, anyone?",
         "Think of last week: how often was it?"
-      ]
+      ],
+      "short": "How often"
     },
     "helps": {
       "question": "How would an app help you?",
@@ -102,7 +113,8 @@
         "Imagine the app already exists. What do you tap first?",
         "Should it remind, calculate, collect, share – or something else entirely?",
         "What should it definitely not do?"
-      ]
+      ],
+      "short": "How it helps"
     },
     "name": {
       "question": "Got a name already?",
@@ -111,7 +123,8 @@
       "nudges": [
         "What would you call the app when telling your friends?",
         "Sometimes an emoji says more than three words."
-      ]
+      ],
+      "short": "Name"
     },
     "details": {
       "question": "Tell us whatever you like",
@@ -121,14 +134,16 @@
         "Is there an app that almost does it? What's missing?",
         "What little extra would make you love it?",
         "What would the perfect Monday morning with the app look like?"
-      ]
+      ],
+      "short": "More"
     },
     "visibility": {
       "question": "Who may see your idea?",
       "hint": "You can change this any time.",
       "nudges": [
         "On the board others can vote – that shows me what people want."
-      ]
+      ],
+      "short": "Visibility"
     }
   },
   "frequency": {
