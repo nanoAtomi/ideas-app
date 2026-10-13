@@ -1,0 +1,65 @@
+# How the nicasso portal runs this app. Sent with every deploy
+# (.github/workflows/deploy.yml) - change it together with the code that needs it.
+#
+# Secrets are NOT here: set them once in the portal (Admin → Apps → Ideas → Runtime).
+# A portal value overrides a value of the same name from this file.
+#   ADMIN_USERS  comma-separated Keycloak usernames (X-Auth-Request-User) that see the
+#                admin board. Not secret, but environment-specific - set it in the portal.
+#
+# The portal itself sets PUBLIC_URL, DATABASE_URL (database: true),
+# GATEWAY_SHARED_SECRET (gatewaySecret: true), PORTAL_URL and PORTAL_LOGOUT_URL.
+name: Ideas
+description: Suggest app ideas, browse and vote
+icon: "💡"
+port: 8000
+healthPath: /api/health
+# Reachable without login - only what truly must be public.
+# publicPaths:
+#   - /privacy
+database: true
+gatewaySecret: true
+env:
+  AUTH_MODE: gateway
+
+# How the app presents itself on nicasso.de/apps/ideas - goes live with the next
+# deploy. Screenshots: put images under a public path (add it to publicPaths) and list
+# them, e.g. screenshots: [{ src: /showcase/board.png, de: "...", en: "..." }].
+showcase:
+  de:
+    tagline: Deine Idee. Meine nächste App.
+    summary: Dich nervt was im Alltag, und eine App könnte helfen? Erzähl's hier in ein paar Klicks – die besten Ideen werden gebaut. Versprochen.
+    features:
+      - icon: "🪄"
+        title: Ein paar einfache Fragen
+        text: Kein leeres Blatt – die App fragt nach, du antwortest, fertig.
+      - icon: "💭"
+        title: Platz für Spinnereien
+        text: Zu jeder Frage ein kleiner Denkanstoß und am Ende Raum für alles, was dir sonst noch einfällt.
+      - icon: "👍"
+        title: Mitstimmen
+        text: Stöbere durch die Ideen der anderen und gib deinen Favoriten einen Daumen.
+      - icon: "🙈"
+        title: Auch ganz leise
+        text: Anonym aufs Board oder nur für mich – du entscheidest, wer was sieht.
+      - icon: "📬"
+        title: Du hörst von mir
+        text: Du siehst, ob deine Idee angeschaut, geplant oder schon gebaut wurde.
+  en:
+    tagline: Your idea. My next app.
+    summary: Something in your day bugs you and an app could help? Tell me in a few clicks – the best ideas get built. Promise.
+    features:
+      - icon: "🪄"
+        title: A few simple questions
+        text: No blank page – the app asks, you answer, done.
+      - icon: "💭"
+        title: Room for wild thoughts
+        text: A little nudge with every question, and room at the end for whatever else comes to mind.
+      - icon: "👍"
+        title: Vote along
+        text: Browse other people's ideas and give your favourites a thumbs-up.
+      - icon: "🙈"
+        title: Quietly, if you like
+        text: Post anonymously or just for me – you decide who sees what.
+      - icon: "📬"
+        title: You'll hear back
+        text: See whether your idea was looked at, planned or already built.
