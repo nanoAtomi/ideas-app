@@ -9,7 +9,7 @@ import type { Language } from './i18n';
 import { AdminPage } from './pages/AdminPage';
 import { EditPage } from './pages/EditPage';
 import { MinePage } from './pages/MinePage';
-import { DiscoverPage } from './pages/Pages';
+import { DiscoverPage } from './pages/DiscoverPage';
 import { SubmitPage } from './pages/SubmitPage';
 
 export function App() {
@@ -62,6 +62,11 @@ export function App() {
           <Route path="/admin" element={<AdminPage isAdmin={me.data.is_admin} />} />
           <Route path="*" element={<DiscoverPage />} />
         </Routes>
+        <footer className="mt-12 text-center text-xs text-slate-400">
+          <a href="/privacy/" className="hover:text-ink">
+            {t('footer.privacy')}
+          </a>
+        </footer>
       </main>
       <BottomNav />
     </>

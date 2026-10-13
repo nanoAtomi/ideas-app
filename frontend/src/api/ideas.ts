@@ -17,6 +17,8 @@ export interface IdeaFields {
   details: string | null;
   visibility: Visibility;
   anonymous: boolean;
+  /** Direct imgur image URLs (the server normalizes what the user pasted). */
+  image_links: string[];
 }
 
 export interface Idea extends IdeaFields {
@@ -46,6 +48,7 @@ export const EMPTY_IDEA: IdeaFields = {
   details: null,
   visibility: 'board',
   anonymous: false,
+  image_links: [],
 };
 
 export function useMyIdeas() {
@@ -102,6 +105,45 @@ export function useAdminActions() {
 
 /** Just the editable answers of an idea (what PUT /api/ideas/{id} takes). */
 export function ideaFields(idea: IdeaFields): IdeaFields {
-  const { problem, audience, frequency, helps, name_idea, details, visibility, anonymous } = idea;
-  return { problem, audience, frequency, helps, name_idea, details, visibility, anonymous };
+  const { problem, audience, frequency, helps, name_idea, details, visibility, anonymous, image_links } = idea;
+  return { problem, audience, frequency, helps, name_idea, details, visibility, anonymous, image_links };
 }
+
+/** An idea as everyone sees it on the board. */
+export interface BoardIdea extends Omit<IdeaFields, 'visibility' | 'anonymous'> {
+  id: number;
+  status: Status;
+  created_at: string;
+  /** null = posted anonymously. */
+  author_name: string | null;
+  votes: number;
+  voted: boolean;
+  mine: boolean;
+}
+
+export type BoardSort = 'votes' | 'new';
+
+export function useBoard(sort: BoardSort) {
+  return useQuery({ queryKey: ['board', sort], queryFn: () => api<BoardIdea[]>(`/api/board?sort=${sort}`) });
+}
+
+export function useVote() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, voted }: { id: number; voted: boolean }) =>
+      api<null>(`/api/board/${id}/vote`, { method: voted ? 'PUT' : 'DELETE' }),
+    // Count the thumb right away; keep the order until the next refetch so cards don't jump.
+    onMutate: ({ id, voted }) => {
+      for (const sort of ['votes', 'new'] as BoardSort[]) {
+        queryClient.setQueryData<BoardIdea[]>(['board', sort], (ideas) =>
+          ideas?.map((idea) => (idea.id === id && idea.voted !== voted ? { ...idea, voted, votes: idea.votes + (voted ? 1 : -1) } : idea)),
+        );
+      }
+    },
+    onError: () => void queryClient.invalidateQueries({ queryKey: ['board'] }),
+  });
+}
+
+/** What the server accepts: single imgur images (see backend app/images.py). */
+export const IMGUR_LINK = /^https:\/\/(?:(?:www|m)\.)?(i\.)?imgur\.com\/[A-Za-z0-9]{5,12}(?:\.(png|jpe?g|gif|webp))?\/?$/;
+export const MAX_IMAGES = 3;

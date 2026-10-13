@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { STATUSES, useAdminActions, useAdminIdeas, type AdminIdea, type Status } from '../api/ideas';
 import { Dialog } from '../components/Dialog';
 import { EmptyState } from '../components/EmptyState';
+import { ImageStrip } from '../components/Images';
 import { STEPS } from '../components/IdeaInputs';
 import { formatDate, STATUS_STYLE } from '../components/StatusBadge';
 import { PageTitle } from './Pages';
@@ -205,6 +206,7 @@ function IdeaDetail({ idea, onClose }: { idea: AdminIdea; onClose: () => void })
           </div>
         ))}
       </dl>
+      <ImageStrip links={idea.image_links} />
 
       <div className="mt-6 grid gap-4 rounded-3xl bg-ink/[0.03] p-4 sm:grid-cols-2 dark:bg-white/[0.04]">
         <label className="text-sm font-semibold">

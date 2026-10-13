@@ -28,8 +28,17 @@
     "title": "What bugs you in everyday life?",
     "lead": "Suggestions for new apps end up here. Browse, vote – or throw your own idea into the pot.",
     "cta": "Submit an idea",
-    "emptyTitle": "The board opens soon.",
-    "emptyText": "Soon you'll see other people's ideas here and vote on them. Submitting works already."
+    "emptyTitle": "Pretty empty in here.",
+    "emptyText": "Be the first idea on the board - the others are waiting with their thumbs.",
+    "boardTitle": "The idea board",
+    "sort": "Sort",
+    "sortBy": {
+      "votes": "Popular",
+      "new": "New"
+    },
+    "vote": "Give a thumbs-up ({{count}})",
+    "unvote": "Take back your thumbs-up ({{count}})",
+    "ownIdea": "Your own idea - the others vote on this one."
   },
   "wizard": {
     "progress": "Step {{step}} of {{total}}",
@@ -63,7 +72,14 @@
       "question": "Who has this problem?",
       "hint": "Just you, or others too?",
       "placeholder": "e.g. my flatmates, parents of small kids…",
-      "chips": ["Just me", "Family", "Flatmates", "Friends", "Colleagues", "Club"],
+      "chips": [
+        "Just me",
+        "Family",
+        "Flatmates",
+        "Friends",
+        "Colleagues",
+        "Club"
+      ],
       "nudges": [
         "Think of family, flatmates, your club or colleagues.",
         "Who would you show the app to first?",
@@ -116,15 +132,41 @@
     }
   },
   "frequency": {
-    "daily": { "icon": "☀️", "label": "Daily" },
-    "weekly": { "icon": "📅", "label": "Every week" },
-    "monthly": { "icon": "🗓️", "label": "Every month" },
-    "rarely": { "icon": "🌙", "label": "Now and then" }
+    "daily": {
+      "icon": "☀️",
+      "label": "Daily"
+    },
+    "weekly": {
+      "icon": "📅",
+      "label": "Every week"
+    },
+    "monthly": {
+      "icon": "🗓️",
+      "label": "Every month"
+    },
+    "rarely": {
+      "icon": "🌙",
+      "label": "Now and then"
+    }
   },
   "visibility": {
-    "board": { "icon": "🌍", "label": "On the board", "short": "Board", "text": "Everyone signed in sees the idea and can vote." },
-    "private": { "icon": "🔒", "label": "Only for Nico", "short": "Only for Nico", "text": "Stays between us – nobody else sees it." },
-    "anonymous": { "label": "Show anonymously", "short": "Anonymous", "text": "Your name isn't shown on the board. Nico still sees it." }
+    "board": {
+      "icon": "🌍",
+      "label": "On the board",
+      "short": "Board",
+      "text": "Everyone signed in sees the idea and can vote."
+    },
+    "private": {
+      "icon": "🔒",
+      "label": "Only for Nico",
+      "short": "Only for Nico",
+      "text": "Stays between us – nobody else sees it."
+    },
+    "anonymous": {
+      "label": "Show anonymously",
+      "short": "Anonymous",
+      "text": "Your name isn't shown on the board. Nico still sees it."
+    }
   },
   "status": {
     "new": "New",
@@ -178,5 +220,15 @@
     "notSignedIn": "You're not signed in. Reload the page to sign in.",
     "load": "That didn't work: {{message}}",
     "retry": "Try again"
+  },
+  "images": {
+    "title": "Sketches or screenshots (optional)",
+    "hint": "Upload an image to imgur.com and paste the link here. Up to 3 images.",
+    "label": "Image link {{n}}",
+    "invalid": "That's not a link to a single imgur image (https://imgur.com/... or https://i.imgur.com/...).",
+    "alt": "Image {{n}} of the idea"
+  },
+  "footer": {
+    "privacy": "Privacy"
   }
 }

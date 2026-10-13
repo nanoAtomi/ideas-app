@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { FREQUENCIES, type Frequency, type IdeaFields, type Visibility } from '../api/ideas';
+import { ImageLinksInput } from './Images';
 
 // One input per wizard question. The wizard shows them one at a time; the edit page
 // shows all of them on one page.
@@ -108,16 +109,19 @@ export function StepInput({ step, value, onChange, autoFocus }: InputProps & { s
       );
     case 'details':
       return (
-        <textarea
-          aria-label={label}
-          autoFocus={autoFocus}
-          rows={7}
-          maxLength={LIMITS.details}
-          value={value.details ?? ''}
-          onChange={(e) => onChange({ details: orNull(e.target.value) })}
-          placeholder={t('steps.details.placeholder')}
-          className={field}
-        />
+        <>
+          <textarea
+            aria-label={label}
+            autoFocus={autoFocus}
+            rows={7}
+            maxLength={LIMITS.details}
+            value={value.details ?? ''}
+            onChange={(e) => onChange({ details: orNull(e.target.value) })}
+            placeholder={t('steps.details.placeholder')}
+            className={field}
+          />
+          <ImageLinksInput links={value.image_links} onChange={(image_links) => onChange({ image_links })} />
+        </>
       );
     case 'visibility':
       return <VisibilityInput value={value} onChange={onChange} />;

@@ -3,7 +3,7 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { AdminIdea, Idea } from './api/ideas';
+import type { AdminIdea, BoardIdea, Idea } from './api/ideas';
 import type { Me } from './api/me';
 import { App } from './App';
 import i18n from './i18n';
@@ -30,6 +30,7 @@ const idea: Idea = {
   details: null,
   visibility: 'board',
   anonymous: true,
+  image_links: ['https://i.imgur.com/AbC123x.png'],
   status: 'planned',
   admin_reply: 'Love it, building it next!',
   replied_at: '2026-10-12T10:00:00Z',
@@ -52,6 +53,11 @@ const adminIdeas: AdminIdea[] = [
     hidden: false,
     deleted_at: '2026-10-11T10:00:00Z',
   },
+];
+
+const board: BoardIdea[] = [
+  { ...idea, id: 20, name_idea: '🍽️ Dishduty', author_name: null, votes: 3, voted: false, mine: true },
+  { ...idea, id: 21, name_idea: '🌱 Plant pal', problem: 'Plants keep dying', author_name: 'bob', votes: 1, voted: false, mine: false, image_links: [] },
 ];
 
 let fetchMock: ReturnType<typeof vi.fn>;
@@ -80,6 +86,8 @@ describe('ideas', () => {
       if (url === '/api/ideas/mine') return json([idea]);
       if (url === '/api/ideas/7' && method === 'DELETE') return json(null, 204);
       if (url === '/api/admin/ideas') return json(adminIdeas);
+      if (url.startsWith('/api/board?')) return json(board);
+      if (url === '/api/board/21/vote') return json(null, 204);
       return json({ detail: 'Not found' }, 404);
     });
     vi.stubGlobal('fetch', fetchMock);
@@ -119,6 +127,7 @@ describe('ideas', () => {
       details: null,
       visibility: 'board',
       anonymous: true,
+      image_links: [],
     });
   });
 
@@ -155,5 +164,39 @@ describe('ideas', () => {
     expect(within(dialog).getByText(/alice@example.com/)).toBeInTheDocument();
     expect(within(dialog).getByRole('combobox', { name: 'Status' })).toHaveValue('planned');
     expect(within(dialog).getByRole('textbox', { name: /Reply to the author/ })).toHaveValue('Love it, building it next!');
+  });
+
+  it('shows the board: anonymous authors, images, votes', async () => {
+    const user = userEvent.setup();
+    renderApp('/');
+    const own = (await screen.findByRole('button', { name: '🍽️ Dishduty' })).closest('article')!;
+    expect(within(own).getByText(/Anonymous/)).toBeInTheDocument();
+    expect(within(own).getByRole('img', { name: 'Image 1 of the idea' })).toHaveAttribute('src', 'https://i.imgur.com/AbC123x.png');
+    // No voting for one's own idea.
+    expect(within(own).queryByRole('button', { name: /thumbs-up/ })).not.toBeInTheDocument();
+
+    const other = screen.getByRole('button', { name: '🌱 Plant pal' }).closest('article')!;
+    expect(within(other).getByText('bob')).toBeInTheDocument();
+    await user.click(within(other).getByRole('button', { name: 'Give a thumbs-up (1)' }));
+    expect(fetchMock).toHaveBeenCalledWith('/api/board/21/vote', expect.objectContaining({ method: 'PUT' }));
+    expect(within(other).getByRole('button', { name: 'Take back your thumbs-up (2)' })).toHaveAttribute('aria-pressed', 'true');
+
+    await user.click(screen.getByRole('button', { name: 'New' }));
+    expect(fetchMock).toHaveBeenCalledWith('/api/board?sort=new', expect.anything());
+  });
+
+  it('accepts only imgur links for screenshots', async () => {
+    const user = userEvent.setup();
+    renderApp('/submit');
+    await user.type(await screen.findByRole('textbox', { name: 'What problem bugs you?' }), 'x');
+    await user.click(screen.getByRole('button', { name: 'Next →' }));
+    for (let i = 0; i < 4; i++) await user.click(screen.getByRole('button', { name: 'Skip' }));
+    const first = screen.getByRole('textbox', { name: 'Image link 1' });
+    await user.type(first, 'https://example.com/cat.png');
+    expect(screen.getByText(/not a link to a single imgur image/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Next →' })).toBeDisabled();
+    await user.clear(first);
+    await user.type(first, 'https://imgur.com/AbC123x');
+    expect(screen.getByRole('button', { name: 'Next →' })).toBeEnabled();
   });
 });

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ideaFields, useIdea, useIdeaActions, type Idea, type IdeaFields } from '../api/ideas';
 import { STEPS, StepInput } from '../components/IdeaInputs';
+import { imageLinksValid } from '../components/Images';
 import { PageTitle } from './Pages';
 
 /** All wizard questions on one page, for changing an idea later. */
@@ -27,7 +28,7 @@ function EditForm({ idea }: { idea: Idea }) {
   const navigate = useNavigate();
   const { edit } = useIdeaActions();
   const [fields, setFields] = useState<IdeaFields>(() => ideaFields(idea));
-  const valid = fields.problem.trim() !== '';
+  const valid = fields.problem.trim() !== '' && imageLinksValid(fields.image_links);
 
   return (
     <div className="mx-auto max-w-2xl">

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { EMPTY_IDEA, useIdeaActions, type IdeaFields } from '../api/ideas';
 import { STEPS, StepInput } from '../components/IdeaInputs';
+import { imageLinksValid } from '../components/Images';
 
 const DRAFT_KEY = 'ideas.draft';
 
@@ -34,7 +35,7 @@ export function SubmitPage() {
   const [done, setDone] = useState(false);
   const step = STEPS[index];
   const last = index === STEPS.length - 1;
-  const canContinue = step !== 'problem' || draft.problem.trim() !== '';
+  const canContinue = step === 'problem' ? draft.problem.trim() !== '' : step !== 'details' || imageLinksValid(draft.image_links);
 
   useEffect(() => saveDraft(draft), [draft]);
 

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useIdeaActions, useMyIdeas, type Idea } from '../api/ideas';
 import { Dialog } from '../components/Dialog';
 import { EmptyState } from '../components/EmptyState';
+import { ImageStrip } from '../components/Images';
 import { formatDate, StatusBadge } from '../components/StatusBadge';
 import { PageTitle } from './Pages';
 
@@ -55,6 +56,7 @@ function IdeaCard({ idea, onDelete }: { idea: Idea; onDelete: () => void }) {
       </div>
       <h2 className="mt-3 text-lg font-bold tracking-tight">{idea.name_idea ?? t('mine.untitled')}</h2>
       <p className="mt-1 line-clamp-3 whitespace-pre-line text-slate-600 dark:text-slate-300">{idea.problem}</p>
+      <ImageStrip links={idea.image_links} size="sm" />
 
       {idea.admin_reply && (
         <div className="mt-4 rounded-2xl rounded-tl-md bg-gradient-to-br from-amber-50 to-orange-50 p-4 text-sm dark:from-amber-500/10 dark:to-orange-500/10">

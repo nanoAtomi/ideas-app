@@ -28,8 +28,17 @@
     "title": "Was nervt dich im Alltag?",
     "lead": "Hier landen Vorschläge für neue Apps. Stöbere, stimme ab – oder wirf deine eigene Idee in den Topf.",
     "cta": "Idee einreichen",
-    "emptyTitle": "Das Board öffnet bald.",
-    "emptyText": "Bald siehst du hier die Ideen der anderen und kannst mitstimmen. Einreichen geht schon jetzt."
+    "emptyTitle": "Noch ziemlich leer hier.",
+    "emptyText": "Sei die erste Idee auf dem Board - die anderen warten schon mit dem Daumen.",
+    "boardTitle": "Das Ideen-Board",
+    "sort": "Sortieren",
+    "sortBy": {
+      "votes": "Beliebt",
+      "new": "Neu"
+    },
+    "vote": "Daumen hoch geben ({{count}})",
+    "unvote": "Daumen zurücknehmen ({{count}})",
+    "ownIdea": "Deine eigene Idee - dafür stimmen die anderen."
   },
   "wizard": {
     "progress": "Schritt {{step}} von {{total}}",
@@ -63,7 +72,14 @@
       "question": "Wer hat das Problem?",
       "hint": "Nur du, oder geht's anderen genauso?",
       "placeholder": "z. B. meine WG, Eltern mit kleinen Kindern…",
-      "chips": ["Nur ich", "Familie", "WG / Mitbewohner", "Freunde", "Kollegen", "Verein"],
+      "chips": [
+        "Nur ich",
+        "Familie",
+        "WG / Mitbewohner",
+        "Freunde",
+        "Kollegen",
+        "Verein"
+      ],
       "nudges": [
         "Denk an Familie, WG, Verein oder Kollegen.",
         "Wem würdest du die App als Erstes zeigen?",
@@ -116,15 +132,41 @@
     }
   },
   "frequency": {
-    "daily": { "icon": "☀️", "label": "Täglich" },
-    "weekly": { "icon": "📅", "label": "Jede Woche" },
-    "monthly": { "icon": "🗓️", "label": "Jeden Monat" },
-    "rarely": { "icon": "🌙", "label": "Ab und zu" }
+    "daily": {
+      "icon": "☀️",
+      "label": "Täglich"
+    },
+    "weekly": {
+      "icon": "📅",
+      "label": "Jede Woche"
+    },
+    "monthly": {
+      "icon": "🗓️",
+      "label": "Jeden Monat"
+    },
+    "rarely": {
+      "icon": "🌙",
+      "label": "Ab und zu"
+    }
   },
   "visibility": {
-    "board": { "icon": "🌍", "label": "Aufs Board", "short": "Board", "text": "Alle Angemeldeten sehen die Idee und können mitstimmen." },
-    "private": { "icon": "🔒", "label": "Nur für Nico", "short": "Nur für Nico", "text": "Bleibt zwischen uns – niemand sonst sieht sie." },
-    "anonymous": { "label": "Anonym zeigen", "short": "Anonym", "text": "Dein Name steht nicht auf dem Board. Nico sieht ihn trotzdem." }
+    "board": {
+      "icon": "🌍",
+      "label": "Aufs Board",
+      "short": "Board",
+      "text": "Alle Angemeldeten sehen die Idee und können mitstimmen."
+    },
+    "private": {
+      "icon": "🔒",
+      "label": "Nur für Nico",
+      "short": "Nur für Nico",
+      "text": "Bleibt zwischen uns – niemand sonst sieht sie."
+    },
+    "anonymous": {
+      "label": "Anonym zeigen",
+      "short": "Anonym",
+      "text": "Dein Name steht nicht auf dem Board. Nico sieht ihn trotzdem."
+    }
   },
   "status": {
     "new": "Neu",
@@ -178,5 +220,15 @@
     "notSignedIn": "Du bist nicht angemeldet. Lade die Seite neu, um dich anzumelden.",
     "load": "Das hat nicht geklappt: {{message}}",
     "retry": "Nochmal versuchen"
+  },
+  "images": {
+    "title": "Skizzen oder Screenshots (optional)",
+    "hint": "Lade ein Bild auf imgur.com hoch und füge den Link hier ein. Bis zu 3 Bilder.",
+    "label": "Bild-Link {{n}}",
+    "invalid": "Das ist kein Link zu einem einzelnen imgur-Bild (https://imgur.com/… oder https://i.imgur.com/…).",
+    "alt": "Bild {{n}} zur Idee"
+  },
+  "footer": {
+    "privacy": "Datenschutz"
   }
 }
