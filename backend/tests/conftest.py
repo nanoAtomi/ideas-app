@@ -10,7 +10,7 @@ os.environ["GATEWAY_SHARED_SECRET"] = "test-secret"
 os.environ["PORTAL_URL"] = "https://portal.example"
 os.environ["PORTAL_LOGOUT_URL"] = "https://portal.example/logout"
 os.environ["STATIC_DIR"] = os.path.join(_tmp, "no-frontend")
-os.environ["ADMIN_USERS"] = "boss, chief"
+os.environ["ADMIN_USERS"] = "boss, chief, Admin@Example.com"
 
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402

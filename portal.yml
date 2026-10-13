@@ -3,7 +3,7 @@
 #
 # Secrets are NOT here: set them once in the portal (Admin → Apps → Ideas → Runtime).
 # A portal value overrides a value of the same name from this file.
-#   ADMIN_USERS  comma-separated Keycloak usernames (X-Auth-Request-User) that see the
+#   ADMIN_USERS  comma-separated e-mail addresses (or Keycloak user ids) that see the
 #                admin board. Not secret, but environment-specific - set it in the portal.
 #
 # The portal itself sets PUBLIC_URL, DATABASE_URL (database: true),

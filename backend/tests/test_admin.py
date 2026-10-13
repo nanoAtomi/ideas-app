@@ -9,6 +9,10 @@ def test_admin_endpoints_need_admin(client):
     assert client.delete(f"/api/admin/ideas/{idea['id']}", headers=ALICE).status_code == 403
 
 
+def test_admin_by_email(client):
+    assert client.get("/api/admin/ideas", headers=as_user("3f2a-uuid", "admin@example.com")).status_code == 200
+
+
 def test_admin_sees_every_idea_with_its_author(client):
     submit(client, problem="public")
     submit(client, problem="secret", visibility="private", anonymous=True)

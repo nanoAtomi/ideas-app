@@ -10,8 +10,9 @@ def test_platform_links(client):
 def test_admins_from_admin_users(client):
     assert client.get("/api/me", headers=as_user("boss")).json()["is_admin"] is True
     assert client.get("/api/me", headers=as_user("chief")).json()["is_admin"] is True
-    # Exact match only.
-    assert client.get("/api/me", headers=as_user("Boss")).json()["is_admin"] is False
+    # By e-mail (as the gateway reports it), case-insensitive.
+    assert client.get("/api/me", headers=as_user("3f2a-uuid", "admin@example.com")).json()["is_admin"] is True
+    assert client.get("/api/me", headers=as_user("other", "someone@example.com")).json()["is_admin"] is False
 
 
 def test_update_preferences(client):

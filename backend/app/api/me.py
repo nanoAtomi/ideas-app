@@ -41,7 +41,7 @@ def _response(user: User) -> MeResponse:
         email=user.email,
         display_name=user.display_name,
         language=user.language,
-        is_admin=settings.is_admin(user.username),
+        is_admin=settings.is_admin(user.username, user.email),
         portal_url=portal_url,
         logout_url=(settings.portal_logout_url or None) if gateway else None,
         feedback_url=f"{portal_url}/feedback?app=ideas" if portal_url else None,

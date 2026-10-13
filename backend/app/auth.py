@@ -56,7 +56,7 @@ def current_user(request: Request, db: Session = Depends(get_db)) -> User:
 
 def admin_user(user: User = Depends(current_user)) -> User:
     """Only for the admin board (ADMIN_USERS)."""
-    if not settings.is_admin(user.username):
+    if not settings.is_admin(user.username, user.email):
         raise HTTPException(status_code=403, detail="Admins only")
     return user
 
