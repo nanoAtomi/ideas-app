@@ -1,0 +1,51 @@
+{
+  "app": {
+    "name": "Ideas"
+  },
+  "loading": "One moment…",
+  "nav": {
+    "main": "Main navigation",
+    "discover": "Discover",
+    "submit": "Submit an idea",
+    "submitShort": "New",
+    "mine": "My ideas",
+    "admin": "Admin"
+  },
+  "header": {
+    "portal": "Portal",
+    "portalTitle": "Back to the app portal",
+    "signOut": "Sign out",
+    "feedback": "Feedback",
+    "language": "Language",
+    "menu": "Menu"
+  },
+  "discover": {
+    "kicker": "Idea board",
+    "title": "What bugs you in everyday life?",
+    "lead": "Suggestions for new apps end up here. Browse, vote – or throw your own idea into the pot.",
+    "cta": "Submit an idea",
+    "emptyTitle": "Pretty empty in here.",
+    "emptyText": "The board opens soon. Your idea can still be the first one."
+  },
+  "submit": {
+    "title": "Submit an idea",
+    "lead": "A few simple questions, plus plenty of room for wild thoughts.",
+    "soonTitle": "The idea wizard is being built.",
+    "soonText": "Soon it will ask you step by step – with little nudges in case you get stuck."
+  },
+  "mine": {
+    "title": "My ideas",
+    "emptyTitle": "You haven't submitted an idea yet.",
+    "emptyText": "Don't worry, \"I have this feeling…\" counts as a start too."
+  },
+  "admin": {
+    "title": "Admin board",
+    "soonText": "Soon you'll sort every idea here, from \"new\" to \"built\".",
+    "forbidden": "This area is for admins only."
+  },
+  "error": {
+    "notSignedIn": "You're not signed in. Reload the page to sign in.",
+    "load": "That didn't work: {{message}}",
+    "retry": "Try again"
+  }
+}

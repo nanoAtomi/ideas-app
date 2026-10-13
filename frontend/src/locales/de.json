@@ -1,0 +1,51 @@
+{
+  "app": {
+    "name": "Ideen"
+  },
+  "loading": "Einen Moment…",
+  "nav": {
+    "main": "Hauptnavigation",
+    "discover": "Entdecken",
+    "submit": "Idee einreichen",
+    "submitShort": "Neu",
+    "mine": "Meine Ideen",
+    "admin": "Admin"
+  },
+  "header": {
+    "portal": "Portal",
+    "portalTitle": "Zurück zum App-Portal",
+    "signOut": "Abmelden",
+    "feedback": "Feedback",
+    "language": "Sprache",
+    "menu": "Menü"
+  },
+  "discover": {
+    "kicker": "Ideen-Board",
+    "title": "Was nervt dich im Alltag?",
+    "lead": "Hier landen Vorschläge für neue Apps. Stöbere, stimme ab – oder wirf deine eigene Idee in den Topf.",
+    "cta": "Idee einreichen",
+    "emptyTitle": "Noch ziemlich leer hier.",
+    "emptyText": "Das Board öffnet bald. Deine Idee kann trotzdem schon die erste sein."
+  },
+  "submit": {
+    "title": "Idee einreichen",
+    "lead": "Ein paar einfache Fragen, dazu jede Menge Platz für Spinnereien.",
+    "soonTitle": "Der Ideen-Assistent ist in Arbeit.",
+    "soonText": "Bald fragt er dich Schritt für Schritt – mit kleinen Denkanstößen, falls es mal hakt."
+  },
+  "mine": {
+    "title": "Meine Ideen",
+    "emptyTitle": "Du hast noch keine Idee eingereicht.",
+    "emptyText": "Keine Sorge, auch „Ich hab da so ein Gefühl…“ zählt als Anfang."
+  },
+  "admin": {
+    "title": "Admin-Board",
+    "soonText": "Hier sortierst du bald alle Ideen von „neu“ bis „umgesetzt“.",
+    "forbidden": "Dieser Bereich ist nur für Admins."
+  },
+  "error": {
+    "notSignedIn": "Du bist nicht angemeldet. Lade die Seite neu, um dich anzumelden.",
+    "load": "Das hat nicht geklappt: {{message}}",
+    "retry": "Nochmal versuchen"
+  }
+}
