@@ -3,6 +3,10 @@
     "name": "Ideen"
   },
   "loading": "Einen Moment…",
+  "common": {
+    "close": "Schließen",
+    "cancel": "Abbrechen"
+  },
   "nav": {
     "main": "Hauptnavigation",
     "discover": "Entdecken",
@@ -24,24 +28,151 @@
     "title": "Was nervt dich im Alltag?",
     "lead": "Hier landen Vorschläge für neue Apps. Stöbere, stimme ab – oder wirf deine eigene Idee in den Topf.",
     "cta": "Idee einreichen",
-    "emptyTitle": "Noch ziemlich leer hier.",
-    "emptyText": "Das Board öffnet bald. Deine Idee kann trotzdem schon die erste sein."
+    "emptyTitle": "Das Board öffnet bald.",
+    "emptyText": "Bald siehst du hier die Ideen der anderen und kannst mitstimmen. Einreichen geht schon jetzt."
   },
-  "submit": {
-    "title": "Idee einreichen",
-    "lead": "Ein paar einfache Fragen, dazu jede Menge Platz für Spinnereien.",
-    "soonTitle": "Der Ideen-Assistent ist in Arbeit.",
-    "soonText": "Bald fragt er dich Schritt für Schritt – mit kleinen Denkanstößen, falls es mal hakt."
+  "wizard": {
+    "progress": "Schritt {{step}} von {{total}}",
+    "required": "Die eine Pflichtfrage",
+    "optional": "Optional – überspringen ist okay",
+    "back": "Zurück",
+    "next": "Weiter",
+    "skip": "Überspringen",
+    "send": "Idee abschicken",
+    "sendFailed": "Das hat nicht geklappt. Deine Antworten sind noch da – versuch's gleich nochmal.",
+    "nudge": "Denkanstoß",
+    "anotherNudge": "Noch einer",
+    "thanksTitle": "Danke! Deine Idee ist angekommen.",
+    "thanksText": "Unter „Meine Ideen“ siehst du, ob sie angeschaut, geplant oder schon gebaut wird.",
+    "another": "Noch eine Idee"
+  },
+  "steps": {
+    "problem": {
+      "question": "Welches Problem nervt dich?",
+      "hint": "Ein, zwei Sätze reichen. Ganz ohne Technik-Sprech.",
+      "placeholder": "Ich vergesse ständig, wer in der WG mit Putzen dran ist…",
+      "nudges": [
+        "Was hast du diese Woche dreimal von Hand gemacht?",
+        "Worüber hast du dich zuletzt laut geärgert?",
+        "Welche Zettelwirtschaft oder Excel-Liste ist bei dir heimlich eine App?",
+        "Was vergisst du immer wieder?",
+        "Wofür schreibst du dir Erinnerungen in den Chat mit dir selbst?"
+      ]
+    },
+    "audience": {
+      "question": "Wer hat das Problem?",
+      "hint": "Nur du, oder geht's anderen genauso?",
+      "placeholder": "z. B. meine WG, Eltern mit kleinen Kindern…",
+      "chips": ["Nur ich", "Familie", "WG / Mitbewohner", "Freunde", "Kollegen", "Verein"],
+      "nudges": [
+        "Denk an Familie, WG, Verein oder Kollegen.",
+        "Wem würdest du die App als Erstes zeigen?",
+        "Wer hätte das Problem auch – wenn er nur wüsste, dass es lösbar ist?"
+      ]
+    },
+    "frequency": {
+      "question": "Wie oft passiert das?",
+      "hint": "Ehrlich geschätzt reicht völlig.",
+      "nudges": [
+        "Auch Seltenes kann nerven – Steuererklärung, anyone?",
+        "Denk an die letzte Woche: Wie oft war's?"
+      ]
+    },
+    "helps": {
+      "question": "Wie würde eine App dir helfen?",
+      "hint": "Was müsste sie tun, damit du sagst: endlich!",
+      "placeholder": "Sie erinnert uns reihum und zeigt, wer dran ist…",
+      "nudges": [
+        "Stell dir vor, die App gibt's schon. Was tippst du als Erstes an?",
+        "Soll sie erinnern, rechnen, sammeln, teilen – oder was ganz anderes?",
+        "Was soll sie auf keinen Fall tun?"
+      ]
+    },
+    "name": {
+      "question": "Hast du schon einen Namen?",
+      "hint": "Ein Wortspiel, ein Emoji, ein Arbeitstitel – alles erlaubt.",
+      "placeholder": "🧽 Putzplan",
+      "nudges": [
+        "Wie würdest du die App deinen Freunden gegenüber nennen?",
+        "Ein Emoji sagt manchmal mehr als drei Wörter."
+      ]
+    },
+    "details": {
+      "question": "Erzähl, was du willst",
+      "hint": "Hier ist Platz für alles: Wünsche, Ideen, Bedenken, wilde Spinnereien.",
+      "placeholder": "Bonuspunkte für den, der freiwillig den Müll rausbringt…",
+      "nudges": [
+        "Gibt es eine App, die es fast kann? Was fehlt ihr?",
+        "Was wäre das kleine Extra, das dich begeistern würde?",
+        "Wie sähe der perfekte Montagmorgen mit der App aus?"
+      ]
+    },
+    "visibility": {
+      "question": "Wer darf deine Idee sehen?",
+      "hint": "Kannst du später jederzeit ändern.",
+      "nudges": [
+        "Auf dem Board können andere mitstimmen – das zeigt mir, was gefragt ist."
+      ]
+    }
+  },
+  "frequency": {
+    "daily": { "icon": "☀️", "label": "Täglich" },
+    "weekly": { "icon": "📅", "label": "Jede Woche" },
+    "monthly": { "icon": "🗓️", "label": "Jeden Monat" },
+    "rarely": { "icon": "🌙", "label": "Ab und zu" }
+  },
+  "visibility": {
+    "board": { "icon": "🌍", "label": "Aufs Board", "short": "Board", "text": "Alle Angemeldeten sehen die Idee und können mitstimmen." },
+    "private": { "icon": "🔒", "label": "Nur für Nico", "short": "Nur für Nico", "text": "Bleibt zwischen uns – niemand sonst sieht sie." },
+    "anonymous": { "label": "Anonym zeigen", "short": "Anonym", "text": "Dein Name steht nicht auf dem Board. Nico sieht ihn trotzdem." }
+  },
+  "status": {
+    "new": "Neu",
+    "seen": "Angeschaut",
+    "planned": "In Planung",
+    "built": "Umgesetzt",
+    "not_now": "Nicht jetzt"
   },
   "mine": {
     "title": "Meine Ideen",
+    "lead_one": "Eine Idee bisher – ein Anfang!",
+    "lead_other": "{{count}} Ideen bisher – fleißig!",
     "emptyTitle": "Du hast noch keine Idee eingereicht.",
-    "emptyText": "Keine Sorge, auch „Ich hab da so ein Gefühl…“ zählt als Anfang."
+    "emptyText": "Keine Sorge, auch „Ich hab da so ein Gefühl…“ zählt als Anfang.",
+    "untitled": "Idee ohne Namen",
+    "reply": "Antwort von Nico",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "deleteTitle": "Idee löschen?",
+    "deleteText": "Die Idee verschwindet für alle – vom Board und aus deiner Liste. Nico kann sie aber weiterhin sehen. Soll sie ganz weg, schreib Nico über Feedback.",
+    "deleteConfirm": "Ja, löschen"
+  },
+  "edit": {
+    "title": "Idee bearbeiten",
+    "save": "Speichern",
+    "notFound": "Diese Idee gibt es nicht (mehr)."
   },
   "admin": {
     "title": "Admin-Board",
-    "soonText": "Hier sortierst du bald alle Ideen von „neu“ bis „umgesetzt“.",
-    "forbidden": "Dieser Bereich ist nur für Admins."
+    "lead_one": "Eine Idee insgesamt. Zieh Karten in eine andere Spalte, um den Status zu ändern.",
+    "lead_other": "{{count}} Ideen insgesamt. Zieh Karten in eine andere Spalte, um den Status zu ändern.",
+    "forbidden": "Dieser Bereich ist nur für Admins.",
+    "showDeleted": "Gelöschte zeigen",
+    "hiddenBadge": "Vom Board genommen",
+    "repliedBadge": "Beantwortet",
+    "deletedBadge": "Vom Autor gelöscht",
+    "deletedOn": "Vom Autor gelöscht am {{date}}",
+    "skipped": "übersprungen",
+    "status": "Status",
+    "hide": "Vom Board nehmen",
+    "hideHint": "Die Person sieht ihre Idee weiterhin.",
+    "reply": "Antwort an die Person",
+    "replyPlaceholder": "Danke! Klingt spannend – ich schau's mir an.",
+    "sendReply": "Antwort speichern",
+    "repliedOn": "Geantwortet am {{date}}",
+    "purge": "Endgültig löschen",
+    "purgeText": "Die Idee wird komplett gelöscht – auch für dich. Das lässt sich nicht rückgängig machen.",
+    "purgeConfirm": "Endgültig löschen"
   },
   "error": {
     "notSignedIn": "Du bist nicht angemeldet. Lade die Seite neu, um dich anzumelden.",

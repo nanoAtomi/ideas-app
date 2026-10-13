@@ -3,6 +3,10 @@
     "name": "Ideas"
   },
   "loading": "One moment…",
+  "common": {
+    "close": "Close",
+    "cancel": "Cancel"
+  },
   "nav": {
     "main": "Main navigation",
     "discover": "Discover",
@@ -24,24 +28,151 @@
     "title": "What bugs you in everyday life?",
     "lead": "Suggestions for new apps end up here. Browse, vote – or throw your own idea into the pot.",
     "cta": "Submit an idea",
-    "emptyTitle": "Pretty empty in here.",
-    "emptyText": "The board opens soon. Your idea can still be the first one."
+    "emptyTitle": "The board opens soon.",
+    "emptyText": "Soon you'll see other people's ideas here and vote on them. Submitting works already."
   },
-  "submit": {
-    "title": "Submit an idea",
-    "lead": "A few simple questions, plus plenty of room for wild thoughts.",
-    "soonTitle": "The idea wizard is being built.",
-    "soonText": "Soon it will ask you step by step – with little nudges in case you get stuck."
+  "wizard": {
+    "progress": "Step {{step}} of {{total}}",
+    "required": "The one required question",
+    "optional": "Optional – skipping is fine",
+    "back": "Back",
+    "next": "Next",
+    "skip": "Skip",
+    "send": "Send idea",
+    "sendFailed": "That didn't work. Your answers are still here – try again in a moment.",
+    "nudge": "Nudge",
+    "anotherNudge": "Another",
+    "thanksTitle": "Thanks! Your idea has arrived.",
+    "thanksText": "Under \"My ideas\" you'll see whether it gets looked at, planned or built.",
+    "another": "Another idea"
+  },
+  "steps": {
+    "problem": {
+      "question": "What problem bugs you?",
+      "hint": "One or two sentences are enough. No tech speak needed.",
+      "placeholder": "I keep forgetting whose turn it is to clean the flat…",
+      "nudges": [
+        "What did you do by hand three times this week?",
+        "What did you last complain about out loud?",
+        "Which pile of notes or spreadsheet is secretly an app?",
+        "What do you keep forgetting?",
+        "What do you send yourself reminders about in a chat with yourself?"
+      ]
+    },
+    "audience": {
+      "question": "Who has this problem?",
+      "hint": "Just you, or others too?",
+      "placeholder": "e.g. my flatmates, parents of small kids…",
+      "chips": ["Just me", "Family", "Flatmates", "Friends", "Colleagues", "Club"],
+      "nudges": [
+        "Think of family, flatmates, your club or colleagues.",
+        "Who would you show the app to first?",
+        "Who else has this problem – if only they knew it could be solved?"
+      ]
+    },
+    "frequency": {
+      "question": "How often does it happen?",
+      "hint": "An honest guess is plenty.",
+      "nudges": [
+        "Rare things can be annoying too – tax return, anyone?",
+        "Think of last week: how often was it?"
+      ]
+    },
+    "helps": {
+      "question": "How would an app help you?",
+      "hint": "What would it have to do for you to say: finally!",
+      "placeholder": "It reminds us in turn and shows whose turn it is…",
+      "nudges": [
+        "Imagine the app already exists. What do you tap first?",
+        "Should it remind, calculate, collect, share – or something else entirely?",
+        "What should it definitely not do?"
+      ]
+    },
+    "name": {
+      "question": "Got a name already?",
+      "hint": "A pun, an emoji, a working title – anything goes.",
+      "placeholder": "🧽 Chore chart",
+      "nudges": [
+        "What would you call the app when telling your friends?",
+        "Sometimes an emoji says more than three words."
+      ]
+    },
+    "details": {
+      "question": "Tell us whatever you like",
+      "hint": "Room for everything: wishes, ideas, doubts, wild thoughts.",
+      "placeholder": "Bonus points for whoever takes out the bins voluntarily…",
+      "nudges": [
+        "Is there an app that almost does it? What's missing?",
+        "What little extra would make you love it?",
+        "What would the perfect Monday morning with the app look like?"
+      ]
+    },
+    "visibility": {
+      "question": "Who may see your idea?",
+      "hint": "You can change this any time.",
+      "nudges": [
+        "On the board others can vote – that shows me what people want."
+      ]
+    }
+  },
+  "frequency": {
+    "daily": { "icon": "☀️", "label": "Daily" },
+    "weekly": { "icon": "📅", "label": "Every week" },
+    "monthly": { "icon": "🗓️", "label": "Every month" },
+    "rarely": { "icon": "🌙", "label": "Now and then" }
+  },
+  "visibility": {
+    "board": { "icon": "🌍", "label": "On the board", "short": "Board", "text": "Everyone signed in sees the idea and can vote." },
+    "private": { "icon": "🔒", "label": "Only for Nico", "short": "Only for Nico", "text": "Stays between us – nobody else sees it." },
+    "anonymous": { "label": "Show anonymously", "short": "Anonymous", "text": "Your name isn't shown on the board. Nico still sees it." }
+  },
+  "status": {
+    "new": "New",
+    "seen": "Looked at",
+    "planned": "Planned",
+    "built": "Built",
+    "not_now": "Not now"
   },
   "mine": {
     "title": "My ideas",
+    "lead_one": "One idea so far – a start!",
+    "lead_other": "{{count}} ideas so far – busy!",
     "emptyTitle": "You haven't submitted an idea yet.",
-    "emptyText": "Don't worry, \"I have this feeling…\" counts as a start too."
+    "emptyText": "Don't worry, \"I have this feeling…\" counts as a start too.",
+    "untitled": "Untitled idea",
+    "reply": "Reply from Nico",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteTitle": "Delete idea?",
+    "deleteText": "The idea disappears for everyone – from the board and from your list. Nico can still see it, though. If it should be gone completely, tell Nico via Feedback.",
+    "deleteConfirm": "Yes, delete"
+  },
+  "edit": {
+    "title": "Edit idea",
+    "save": "Save",
+    "notFound": "This idea doesn't exist (anymore)."
   },
   "admin": {
     "title": "Admin board",
-    "soonText": "Soon you'll sort every idea here, from \"new\" to \"built\".",
-    "forbidden": "This area is for admins only."
+    "lead_one": "One idea in total. Drag cards into another column to change their status.",
+    "lead_other": "{{count}} ideas in total. Drag cards into another column to change their status.",
+    "forbidden": "This area is for admins only.",
+    "showDeleted": "Show deleted",
+    "hiddenBadge": "Taken off the board",
+    "repliedBadge": "Replied",
+    "deletedBadge": "Deleted by the author",
+    "deletedOn": "Deleted by the author on {{date}}",
+    "skipped": "skipped",
+    "status": "Status",
+    "hide": "Take off the board",
+    "hideHint": "The author still sees their idea.",
+    "reply": "Reply to the author",
+    "replyPlaceholder": "Thanks! Sounds exciting – I'll take a look.",
+    "sendReply": "Save reply",
+    "repliedOn": "Replied on {{date}}",
+    "purge": "Delete for good",
+    "purgeText": "The idea is deleted completely – for you too. This can't be undone.",
+    "purgeConfirm": "Delete for good"
   },
   "error": {
     "notSignedIn": "You're not signed in. Reload the page to sign in.",

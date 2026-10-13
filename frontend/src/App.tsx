@@ -6,7 +6,11 @@ import { useMe, useUpdateMe } from './api/me';
 import { AppHeader } from './components/AppHeader';
 import { BottomNav } from './components/BottomNav';
 import type { Language } from './i18n';
-import { AdminPage, DiscoverPage, MinePage, SubmitPage } from './pages/Pages';
+import { AdminPage } from './pages/AdminPage';
+import { EditPage } from './pages/EditPage';
+import { MinePage } from './pages/MinePage';
+import { DiscoverPage } from './pages/Pages';
+import { SubmitPage } from './pages/SubmitPage';
 
 export function App() {
   const { t, i18n } = useTranslation();
@@ -54,6 +58,7 @@ export function App() {
           <Route path="/" element={<DiscoverPage />} />
           <Route path="/submit" element={<SubmitPage />} />
           <Route path="/mine" element={<MinePage />} />
+          <Route path="/mine/:ideaId/edit" element={<EditPage />} />
           <Route path="/admin" element={<AdminPage isAdmin={me.data.is_admin} />} />
           <Route path="*" element={<DiscoverPage />} />
         </Routes>

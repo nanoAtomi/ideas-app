@@ -65,7 +65,7 @@ describe('App', () => {
   it('shows the admin board to admins', async () => {
     me = { ...alice, is_admin: true };
     renderApp('/admin');
-    expect(await screen.findByText(/sort every idea here/)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Admin board' })).toBeInTheDocument();
     const nav = screen.getAllByRole('navigation', { name: 'Main navigation' })[0];
     expect(within(nav).getByRole('link', { name: 'Admin' })).toHaveAttribute('href', '/admin');
   });

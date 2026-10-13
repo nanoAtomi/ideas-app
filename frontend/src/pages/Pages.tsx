@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { EmptyState } from '../components/EmptyState';
 
-// P0 placeholders for the four views; each gets its real content in P1/P2 (docs/plan.md).
+// The board itself (votes, visibility) follows in P2 (docs/plan.md).
 
 export function DiscoverPage() {
   const { t } = useTranslation();
@@ -28,45 +28,7 @@ export function DiscoverPage() {
   );
 }
 
-export function SubmitPage() {
-  const { t } = useTranslation();
-  return (
-    <>
-      <PageTitle title={t('submit.title')} lead={t('submit.lead')} />
-      <EmptyState icon="🪄" title={t('submit.soonTitle')} text={t('submit.soonText')} />
-    </>
-  );
-}
-
-export function MinePage() {
-  const { t } = useTranslation();
-  return (
-    <>
-      <PageTitle title={t('mine.title')} />
-      <EmptyState icon="📬" title={t('mine.emptyTitle')} text={t('mine.emptyText')}>
-        <Link to="/submit" className="rounded-full bg-ink px-5 py-3 text-sm font-semibold text-canvas">
-          💡 {t('nav.submit')}
-        </Link>
-      </EmptyState>
-    </>
-  );
-}
-
-export function AdminPage({ isAdmin }: { isAdmin: boolean }) {
-  const { t } = useTranslation();
-  return (
-    <>
-      <PageTitle title={t('admin.title')} />
-      {isAdmin ? (
-        <EmptyState icon="🗂️" title={t('admin.title')} text={t('admin.soonText')} />
-      ) : (
-        <EmptyState icon="🔒" title={t('admin.forbidden')} />
-      )}
-    </>
-  );
-}
-
-function PageTitle({ title, lead }: { title: string; lead?: string }) {
+export function PageTitle({ title, lead }: { title: string; lead?: string }) {
   return (
     <div className="mb-6">
       <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{title}</h1>
