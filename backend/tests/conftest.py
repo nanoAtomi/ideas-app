@@ -10,7 +10,6 @@ os.environ["GATEWAY_SHARED_SECRET"] = "test-secret"
 os.environ["PORTAL_URL"] = "https://portal.example"
 os.environ["PORTAL_LOGOUT_URL"] = "https://portal.example/logout"
 os.environ["STATIC_DIR"] = os.path.join(_tmp, "no-frontend")
-os.environ["ADMIN_USERS"] = "boss, chief, Admin@Example.com"
 
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
@@ -21,11 +20,15 @@ from app.main import app  # noqa: E402
 GATEWAY = {"X-Gateway-Secret": "test-secret"}
 
 
-def as_user(username: str, email: str | None = None) -> dict:
-    headers = {**GATEWAY, "X-Auth-Request-User": username, "X-Requested-With": "ideas"}
+def as_user(username: str, email: str | None = None, groups: str = "/apps/ideas") -> dict:
+    headers = {**GATEWAY, "X-Auth-Request-User": username, "X-Requested-With": "ideas", "X-Auth-Request-Groups": groups}
     if email:
         headers["X-Auth-Request-Email"] = email
     return headers
+
+
+def as_admin(username: str = "boss") -> dict:
+    return as_user(username, groups="/apps/ideas,/apps/ideas/admin")
 
 
 @pytest.fixture()

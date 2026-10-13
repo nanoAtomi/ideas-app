@@ -1,9 +1,9 @@
 """The signed-in user, their preferences and the platform links."""
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
-from ..auth import current_user
+from ..auth import current_user, has_role
 from ..config import settings
 from ..db import get_db
 from ..models import User
@@ -32,7 +32,7 @@ class MeUpdate(BaseModel):
     language: str | None = None
 
 
-def _response(user: User) -> MeResponse:
+def _response(request: Request, user: User) -> MeResponse:
     gateway = settings.auth_mode == "gateway"
     portal_url = settings.portal_url if gateway and settings.portal_url else None
     return MeResponse(
@@ -41,7 +41,7 @@ def _response(user: User) -> MeResponse:
         email=user.email,
         display_name=user.display_name,
         language=user.language,
-        is_admin=settings.is_admin(user.username, user.email),
+        is_admin=has_role(request, "admin"),
         portal_url=portal_url,
         logout_url=(settings.portal_logout_url or None) if gateway else None,
         feedback_url=f"{portal_url}/feedback?app=ideas" if portal_url else None,
@@ -49,12 +49,14 @@ def _response(user: User) -> MeResponse:
 
 
 @router.get("", response_model=MeResponse)
-def get_me(user: User = Depends(current_user)) -> MeResponse:
-    return _response(user)
+def get_me(request: Request, user: User = Depends(current_user)) -> MeResponse:
+    return _response(request, user)
 
 
 @router.patch("", response_model=MeResponse)
-def update_me(body: MeUpdate, user: User = Depends(current_user), db: Session = Depends(get_db)) -> MeResponse:
+def update_me(
+    request: Request, body: MeUpdate, user: User = Depends(current_user), db: Session = Depends(get_db)
+) -> MeResponse:
     if body.display_name is not None:
         name = body.display_name.strip()
         if not name:
@@ -65,4 +67,4 @@ def update_me(body: MeUpdate, user: User = Depends(current_user), db: Session = 
             raise HTTPException(status_code=422, detail=f"language must be one of {', '.join(LANGUAGES)}")
         user.language = body.language or None
     db.commit()
-    return _response(user)
+    return _response(request, user)

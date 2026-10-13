@@ -14,9 +14,9 @@ The decisions and phases are in [docs/plan.md](docs/plan.md).
 
 ## Admins
 
-Admins see every idea (also private and deleted ones) on the admin board. They are the
-e-mail addresses (or Keycloak user ids) in `ADMIN_USERS` (comma-separated), set as a portal variable
-(Admin → Apps → Ideas → Runtime). Locally, `AUTH_MODE=dev` makes the dev user an admin.
+Admins see every idea (also private and deleted ones) on the admin board. Admin is the
+app role `admin` (declared in `portal.yml`): Portal → Users → the person's apps → Ideas →
+Admin. Locally, `AUTH_MODE=dev` makes the dev user an admin.
 
 ## Local development
 

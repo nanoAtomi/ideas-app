@@ -3,8 +3,10 @@
 #
 # Secrets are NOT here: set them once in the portal (Admin → Apps → Ideas → Runtime).
 # A portal value overrides a value of the same name from this file.
-#   ADMIN_USERS  comma-separated e-mail addresses (or Keycloak user ids) that see the
-#                admin board. Not secret, but environment-specific - set it in the portal.
+#   (none)
+#
+# Admins of the idea board have the app role "admin" below - assigned under
+# Portal → Users, read from X-Auth-Request-Groups.
 #
 # The portal itself sets PUBLIC_URL, DATABASE_URL (database: true),
 # GATEWAY_SHARED_SECRET (gatewaySecret: true), PORTAL_URL and PORTAL_LOGOUT_URL.
@@ -20,6 +22,8 @@ database: true
 gatewaySecret: true
 env:
   AUTH_MODE: gateway
+roles:
+  - { id: admin, de: Admin, en: Admin }
 
 # How the app presents itself on nicasso.de/apps/ideas - goes live with the next
 # deploy. Screenshots: put images under a public path (add it to publicPaths) and list

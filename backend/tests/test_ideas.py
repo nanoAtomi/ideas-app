@@ -1,8 +1,8 @@
-from tests.conftest import as_user
+from tests.conftest import as_admin, as_user
 
 ALICE = as_user("alice", "alice@example.com")
 BOB = as_user("bob")
-BOSS = as_user("boss")
+BOSS = as_admin()
 
 FULL = {
     "problem": "  I always forget whose turn the dishes are  ",

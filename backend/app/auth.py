@@ -54,9 +54,25 @@ def current_user(request: Request, db: Session = Depends(get_db)) -> User:
     return user
 
 
-def admin_user(user: User = Depends(current_user)) -> User:
-    """Only for the admin board (ADMIN_USERS)."""
-    if not settings.is_admin(user.username, user.email):
+APP_SLUG = "ideas"
+
+
+def has_role(request: Request, role: str) -> bool:
+    """App role from the portal (portal.yml `roles`) = group /apps/ideas/<role>.
+
+    Only call it after `current_user` accepted the request: the groups header is as
+    trustworthy as the gateway secret check. Locally (AUTH_MODE=dev) the dev user has
+    every role, so the admin board can be built and tried.
+    """
+    if settings.auth_mode == "dev":
+        return True
+    groups = request.headers.get("x-auth-request-groups", "")
+    return f"/apps/{APP_SLUG}/{role}" in {g.strip() for g in groups.split(",")}
+
+
+def admin_user(request: Request, user: User = Depends(current_user)) -> User:
+    """Only for the admin board: the portal role "admin" (Portal → Users)."""
+    if not has_role(request, "admin"):
         raise HTTPException(status_code=403, detail="Admins only")
     return user
 

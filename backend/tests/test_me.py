@@ -1,4 +1,4 @@
-from tests.conftest import as_user
+from tests.conftest import as_admin, as_user
 
 
 def test_platform_links(client):
@@ -7,12 +7,11 @@ def test_platform_links(client):
     assert me["is_admin"] is False
 
 
-def test_admins_from_admin_users(client):
-    assert client.get("/api/me", headers=as_user("boss")).json()["is_admin"] is True
-    assert client.get("/api/me", headers=as_user("chief")).json()["is_admin"] is True
-    # By e-mail (as the gateway reports it), case-insensitive.
-    assert client.get("/api/me", headers=as_user("3f2a-uuid", "admin@example.com")).json()["is_admin"] is True
-    assert client.get("/api/me", headers=as_user("other", "someone@example.com")).json()["is_admin"] is False
+def test_admin_is_the_portal_role(client):
+    assert client.get("/api/me", headers=as_admin()).json()["is_admin"] is True
+    # Exact group path only - not another app's admin role, not a look-alike.
+    assert client.get("/api/me", headers=as_user("x", groups="/apps/todo/admin,/apps/ideas")).json()["is_admin"] is False
+    assert client.get("/api/me", headers=as_user("x", groups="/apps/ideas/administrator")).json()["is_admin"] is False
 
 
 def test_update_preferences(client):
