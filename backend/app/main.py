@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from .api import admin, ideas, me
+from .api import admin, board, ideas, me
 from .config import settings
 from .db import run_migrations
 
@@ -44,7 +44,8 @@ async def guard(request: Request, call_next):
     if not path.startswith("/api/docs"):
         response.headers.setdefault(
             "Content-Security-Policy",
-            "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; "
+            # Screenshots are imgur links (app/images.py) - the only external source.
+            "default-src 'self'; img-src 'self' data: https://i.imgur.com; style-src 'self'; script-src 'self'; "
             "connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors 'self'; "
             "base-uri 'none'; form-action 'self'",
         )
@@ -64,6 +65,7 @@ def health() -> dict:
 
 app.include_router(me.router)
 app.include_router(ideas.router)
+app.include_router(board.router)
 app.include_router(admin.router)
 
 

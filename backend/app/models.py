@@ -1,7 +1,7 @@
 """ORM models. Every schema change also needs an Alembic migration (migrations/versions)."""
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .db import Base
@@ -46,6 +46,8 @@ class Idea(Base):
     helps: Mapped[str | None] = mapped_column(Text)
     name_idea: Mapped[str | None] = mapped_column(String(120))
     details: Mapped[str | None] = mapped_column(Text)
+    # Up to 3 direct imgur image URLs (https://i.imgur.com/<id>.<ext>) - see app/images.py.
+    image_links: Mapped[list[str]] = mapped_column(JSON, default=list)
     visibility: Mapped[str] = mapped_column(String(16), default="board")
     anonymous: Mapped[bool] = mapped_column(Boolean, default=False)
     status: Mapped[str] = mapped_column(String(16), default="new", index=True)
@@ -60,3 +62,13 @@ class Idea(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
     author: Mapped[User] = relationship()
+
+
+class Vote(Base):
+    """One 👍 per person and idea on the board."""
+
+    __tablename__ = "votes"
+
+    idea_id: Mapped[int] = mapped_column(ForeignKey("ideas.id", ondelete="CASCADE"), primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

@@ -16,8 +16,8 @@ icon: "💡"
 port: 8000
 healthPath: /api/health
 # Reachable without login - only what truly must be public.
-# publicPaths:
-#   - /privacy
+publicPaths:
+  - /privacy
 database: true
 gatewaySecret: true
 env:

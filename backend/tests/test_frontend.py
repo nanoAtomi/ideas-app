@@ -19,3 +19,17 @@ def test_spa_fallback(tmp_path, client):
         assert c.get("/api/me", headers=as_user("alice")).status_code == 200
     finally:
         main.app.router.routes.pop()
+
+
+def test_privacy_page_is_a_static_page(tmp_path, client):
+    """/privacy is public (portal.yml) - it must not be the SPA, which needs a login."""
+    (tmp_path / "privacy").mkdir()
+    (tmp_path / "index.html").write_text("<!doctype html><div id=root></div>")
+    (tmp_path / "privacy" / "index.html").write_text("<h1>Datenschutzhinweise</h1>")
+    main.app.mount("/spa-test", SpaStaticFiles(directory=tmp_path, html=True))
+    try:
+        c = TestClient(main.app)
+        assert "Datenschutzhinweise" in c.get("/spa-test/privacy/").text
+        assert "Datenschutzhinweise" in c.get("/spa-test/privacy", follow_redirects=True).text
+    finally:
+        main.app.router.routes.pop()

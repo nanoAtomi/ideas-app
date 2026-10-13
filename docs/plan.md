@@ -30,9 +30,9 @@ questions plus free text, everyone can browse and vote, and the admin picks what
 | Phase | Result | Status |
 |---|---|---|
 | **P0** Skeleton | repo from the blueprint: gateway auth, health, `/api/me` (with `is_admin`), DE/EN shell with nav, `portal.yml`, build + deploy workflows, first deploy | ✅ |
-| **P1** Submit + admin | wizard with inspiration prompts, "My ideas" with status and reply, edit, soft delete with honest hint, admin Kanban (status, reply, hide, permanent delete) | built, deploy pending |
+| **P1** Submit + admin | wizard with inspiration prompts, "My ideas" with status and reply, edit, soft delete with honest hint, admin Kanban (status, reply, hide, permanent delete) | ✅ |
 | **P2** Board | Discover with visibility and anonymous, votes, sort by votes/newest, imgur links with preview, privacy page | |
-| **P3** Open to everyone (platform repo) | portal app flag "open to all signed-in users", checked in `AuthzController`, shown in the portal's app list; then the public launch | |
+| **P3** Open to everyone (platform repo) | done by the platform's access modes (`multi-app` docs/access-and-roles.md): Ideas is "open" | ✅ |
 | **Later** | comments, admin mail on new ideas, "copy to Todo", own image upload | |
 
 Every phase ends with a deploy that can be tried right away.

@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from ..auth import current_user
 from ..db import get_db
+from ..images import normalize_image_links
 from ..models import FREQUENCIES, VISIBILITIES, Idea, User, utcnow
 
 router = APIRouter(prefix="/api/ideas", tags=["ideas"])
@@ -35,6 +36,13 @@ class IdeaFields(BaseModel):
     details: str | None = Field(default=None, max_length=10000)
     visibility: str = "board"
     anonymous: bool = False
+    # imgur links, normalized to direct image URLs.
+    image_links: list[str] = Field(default_factory=list, max_length=10)
+
+    @field_validator("image_links")
+    @classmethod
+    def _images(cls, value: list[str]) -> list[str]:
+        return normalize_image_links(value)
 
     @field_validator("problem")
     @classmethod
@@ -75,6 +83,7 @@ class IdeaOut(BaseModel):
     details: str | None
     visibility: str
     anonymous: bool
+    image_links: list[str]
     status: str
     admin_reply: str | None
     replied_at: datetime | None
