@@ -1,0 +1,75 @@
+# Publishes Ideas to the VPS. GitHub → Actions → "Deploy" → Run workflow.
+#
+#   tag empty → the latest commit of the branch selected in the dialog
+#   tag given → that exact build, e.g. sha-2376314 (= rollback)
+#
+# Runs on a normal GitHub runner: it sends image, tag and portal.yml to the Multi-App
+# portal, which pulls the image and runs the app, then waits for the result. The image
+# must exist - the "Build image" run for that commit must be green.
+#
+# Repository secrets (Settings → Secrets and variables → Actions):
+#   PORTAL_URL           https://api.nicasso.de
+#   PORTAL_DEPLOY_TOKEN  portal → Admin → Apps → Ideas → Runtime → Create token
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Image tag (sha-xxxxxxx). Empty = latest commit of the selected branch"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-ideas
+  cancel-in-progress: false
+
+env:
+  APP_SLUG: ideas
+  IMAGE: ghcr.io/nanoatomi/ideas-app
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy via portal
+        env:
+          PORTAL_URL: ${{ secrets.PORTAL_URL }}
+          PORTAL_DEPLOY_TOKEN: ${{ secrets.PORTAL_DEPLOY_TOKEN }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          [ -n "$PORTAL_URL" ] && [ -n "$PORTAL_DEPLOY_TOKEN" ] \
+            || { echo "::error::Set the repository secrets PORTAL_URL and PORTAL_DEPLOY_TOKEN"; exit 1; }
+          TAG="${INPUT_TAG:-sha-${GITHUB_SHA::7}}"
+          echo "Deploying $IMAGE:$TAG"
+
+          # portal.yml → JSON (yq is preinstalled on GitHub's Ubuntu runners).
+          jq -n --arg image "$IMAGE" --arg tag "$TAG" --argjson manifest "$(yq -o=json '.' portal.yml)" \
+            '{image: $image, tag: $tag, manifest: $manifest}' > payload.json
+
+          code=$(curl -sS -o response.json -w '%{http_code}' -X POST \
+            -H "X-Deploy-Token: $PORTAL_DEPLOY_TOKEN" -H "Content-Type: application/json" \
+            --data @payload.json "$PORTAL_URL/api/hooks/apps/$APP_SLUG/deploy")
+          cat response.json; echo
+          [ "$code" = "202" ] || { echo "::error::Portal refused the deploy (HTTP $code)"; exit 1; }
+
+          # Wait for the portal to finish pulling and starting the container.
+          for _ in $(seq 1 120); do
+            sleep 5
+            curl -fsS -H "X-Deploy-Token: $PORTAL_DEPLOY_TOKEN" \
+              "$PORTAL_URL/api/hooks/apps/$APP_SLUG/status" > status.json
+            status=$(jq -r '.status' status.json)
+            case "$status" in
+              succeeded) echo "✅ $(jq -r '.message' status.json)"; exit 0 ;;
+              failed)    echo "::error::$(jq -r '.message' status.json)"; exit 1 ;;
+            esac
+          done
+          echo "::error::No result after 10 minutes - check Admin → Apps → Runtime in the portal"
+          exit 1
