@@ -35,9 +35,9 @@ questions plus free text, everyone can browse and vote, and the admin picks what
 | **P1** Submit + admin | wizard with inspiration prompts, "My ideas" with status and reply, edit, soft delete with honest hint, admin Kanban (status, reply, hide, permanent delete) | ✅ |
 | **P2** Board | Discover with visibility and anonymous, votes, sort by votes/newest, imgur links with preview, privacy page | ✅ |
 | **P3** Open to everyone (platform repo) | done by the platform's access modes (`multi-app` docs/access-and-roles.md): Ideas is "open" | ✅ |
-| **P4** Wizard on iOS, "in development" | wizard shows exactly one question on the iPhone home-screen app too; Kanban column "in development" | |
-| **P5** Versions, admin edit, notebook | versions with compare/restore; admin edit with reason; rules page; "concerns" field and filter; `/quick` capture page | |
-| **P6** Talk and hand-over | comments on ideas; mail to the admin on a new idea; "copy to Todo" (needs a token API in the Todo app) | |
+| **P4** Wizard on iOS, "in development" | wizard shows exactly one question on the iPhone home-screen app too; Kanban column "in development" | column built; iOS: waiting for the owner's check (stale home-screen app?) |
+| **P5** Versions, admin edit, notebook | versions with compare/restore; admin edit with reason; rules page; "concerns" field and filter; `/quick` capture page | built, deploy pending |
+| **P6** Talk and hand-over | comments on board ideas; "copy to Todo" as a confirm-first link (`todo/?add=&notes=`, no token API); mail to the admin on a new idea (open: how apps send mail) | comments + copy built; mail open |
 | **Later** | own image upload; AI help | |
 
 Every phase ends with a deploy that can be tried right away.
