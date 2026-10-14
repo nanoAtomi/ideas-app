@@ -115,7 +115,7 @@ describe('ideas', () => {
     expect(screen.getByRole('textbox', { name: 'Tell us whatever you like' })).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Skip' }));
     expect(screen.getByRole('heading', { name: 'Who may see your idea?' })).toBeInTheDocument();
-    await user.click(screen.getByRole('checkbox', { name: /Show anonymously/ }));
+    await user.click(screen.getByRole('switch', { name: /Show anonymously/ }));
     await user.click(screen.getByRole('button', { name: 'Next →' }));
 
     // Summary: every answer, each can be changed and leads back here.
@@ -173,7 +173,7 @@ describe('ideas', () => {
     expect(within(fresh).getByText('Too shy to keep this')).toBeInTheDocument();
     expect(within(fresh).getByTitle('Deleted by the author')).toBeInTheDocument();
 
-    await user.click(screen.getByRole('checkbox', { name: 'Show deleted' }));
+    await user.click(screen.getByRole('switch', { name: 'Show deleted' }));
     expect(within(fresh).queryByText('Too shy to keep this')).not.toBeInTheDocument();
 
     await user.click(within(planned).getByText('🍽️ Dishduty'));

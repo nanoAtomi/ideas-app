@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useBoard, useVote, type BoardIdea, type BoardSort } from '../api/ideas';
 import { Dialog } from '../components/Dialog';
 import { EmptyState } from '../components/EmptyState';
@@ -10,7 +10,9 @@ import { formatDate, StatusBadge } from '../components/StatusBadge';
 /** The idea board: everything people put "on the board", to browse and vote on. */
 export function DiscoverPage() {
   const { t } = useTranslation();
-  const [sort, setSort] = useState<BoardSort>('votes');
+  const [params, setParams] = useSearchParams();
+  const sort: BoardSort = params.get('sort') === 'new' ? 'new' : 'votes';
+  const setSort = (next: BoardSort) => setParams(next === 'votes' ? {} : { sort: next }, { replace: true });
   const board = useBoard(sort);
   const [openId, setOpenId] = useState<number | null>(null);
   const open = board.data?.find((idea) => idea.id === openId) ?? null;

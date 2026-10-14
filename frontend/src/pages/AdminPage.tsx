@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { STATUSES, useAdminActions, useAdminIdeas, type AdminIdea, type Status } from '../api/ideas';
 import { Dialog } from '../components/Dialog';
 import { EmptyState } from '../components/EmptyState';
+import { Switch } from '../components/Switch';
 import { ImageStrip } from '../components/Images';
 import { STEPS } from '../components/IdeaInputs';
 import { formatDate, STATUS_STYLE } from '../components/StatusBadge';
@@ -48,10 +49,10 @@ function AdminBoard() {
     <>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <PageTitle title={t('admin.title')} lead={t('admin.lead', { count: ideas.data?.length ?? 0 })} />
-        <label className="mb-6 flex cursor-pointer items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-          <input type="checkbox" checked={showDeleted} onChange={(e) => setShowDeleted(e.target.checked)} className="size-4 accent-orange-500" />
+        <div className="mb-6 flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
           {t('admin.showDeleted')}
-        </label>
+          <Switch checked={showDeleted} onChange={setShowDeleted} label={t('admin.showDeleted')} />
+        </div>
       </div>
       {ideas.isPending && <p className="text-slate-500">{t('loading')}</p>}
       {ideas.isError && <p className="text-red-700 dark:text-red-400">{t('error.load', { message: ideas.error.message })}</p>}
@@ -223,13 +224,13 @@ function IdeaDetail({ idea, onClose }: { idea: AdminIdea; onClose: () => void })
             ))}
           </select>
         </label>
-        <label className="flex cursor-pointer items-center gap-3 self-end rounded-xl px-1 py-2.5 text-sm">
-          <input type="checkbox" checked={idea.hidden} onChange={(e) => update.mutate({ id: idea.id, hidden: e.target.checked })} className="size-5 accent-orange-500" />
+        <div className="flex items-center justify-between gap-3 self-end rounded-xl px-1 py-2.5 text-sm">
           <span>
             <span className="font-semibold">🙊 {t('admin.hide')}</span>
             <span className="block text-xs text-slate-500 dark:text-slate-400">{t('admin.hideHint')}</span>
           </span>
-        </label>
+          <Switch checked={idea.hidden} onChange={(hidden) => update.mutate({ id: idea.id, hidden })} label={t('admin.hide')} />
+        </div>
         <form
           className="sm:col-span-2"
           onSubmit={(e) => {

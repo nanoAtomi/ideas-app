@@ -32,6 +32,9 @@ function EditForm({ idea }: { idea: Idea }) {
 
   return (
     <div className="mx-auto max-w-2xl">
+      <Link to="/mine" className="mb-3 inline-flex min-h-9 items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-ink dark:text-slate-400">
+        ← {t('nav.mine')}
+      </Link>
       <PageTitle title={t('edit.title')} />
       <form
         onSubmit={(e) => {

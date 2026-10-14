@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router-dom';
 import { ApiError } from './api/client';
@@ -6,11 +6,12 @@ import { useMe, useUpdateMe } from './api/me';
 import { AppHeader } from './components/AppHeader';
 import { BottomNav } from './components/BottomNav';
 import type { Language } from './i18n';
-import { AdminPage } from './pages/AdminPage';
 import { EditPage } from './pages/EditPage';
 import { MinePage } from './pages/MinePage';
 import { DiscoverPage } from './pages/DiscoverPage';
 import { SubmitPage } from './pages/SubmitPage';
+
+const AdminPage = lazy(() => import('./pages/AdminPage').then((m) => ({ default: m.AdminPage })));
 
 export function App() {
   const { t, i18n } = useTranslation();
@@ -59,7 +60,14 @@ export function App() {
           <Route path="/submit" element={<SubmitPage />} />
           <Route path="/mine" element={<MinePage />} />
           <Route path="/mine/:ideaId/edit" element={<EditPage />} />
-          <Route path="/admin" element={<AdminPage isAdmin={me.data.is_admin} />} />
+          <Route
+            path="/admin"
+            element={
+              <Suspense fallback={<p className="text-slate-500">{t('loading')}</p>}>
+                <AdminPage isAdmin={me.data.is_admin} />
+              </Suspense>
+            }
+          />
           <Route path="*" element={<DiscoverPage />} />
         </Routes>
         <footer className="mt-12 text-center text-xs text-slate-400">

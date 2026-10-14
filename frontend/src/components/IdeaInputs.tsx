@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { FREQUENCIES, type Frequency, type IdeaFields, type Visibility } from '../api/ideas';
 import { ImageLinksInput } from './Images';
+import { Switch } from './Switch';
 
 // One input per wizard question. The wizard shows them one at a time; the edit page
 // shows all of them on one page.
@@ -146,18 +147,13 @@ function VisibilityInput({ value, onChange }: InputProps) {
         ))}
       </div>
       {value.visibility === 'board' && (
-        <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-line p-4">
-          <input
-            type="checkbox"
-            checked={value.anonymous}
-            onChange={(e) => onChange({ anonymous: e.target.checked })}
-            className="mt-1 size-5 accent-orange-500"
-          />
+        <div className="mt-4 flex items-start justify-between gap-4 rounded-2xl border border-line p-4">
           <span>
             <span className="font-semibold">🙈 {t('visibility.anonymous.label')}</span>
             <span className="block text-sm text-slate-500 dark:text-slate-400">{t('visibility.anonymous.text')}</span>
           </span>
-        </label>
+          <Switch checked={value.anonymous} onChange={(anonymous) => onChange({ anonymous })} label={t('visibility.anonymous.label')} />
+        </div>
       )}
     </div>
   );
