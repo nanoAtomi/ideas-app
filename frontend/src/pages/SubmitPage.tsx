@@ -106,7 +106,9 @@ export function SubmitPage() {
           onSend={send}
         />
       ) : (
+        // Keyed by step: each question is a fresh card - nothing of the last one stays.
         <Question
+          key={STEPS[index]}
           step={STEPS[index]}
           draft={draft}
           onChange={(update) => setDraft({ ...draft, ...update })}
@@ -201,10 +203,10 @@ function Question({ step, draft, onChange, onBack, onNext, fromReview }: Questio
         {!required && <span className="rounded-full bg-ink/5 px-2 py-0.5 text-xs font-medium text-slate-500 dark:bg-white/10 dark:text-slate-400">{t('wizard.optionalBadge')}</span>}
       </div>
 
-      <StepInput key={step} step={step} value={draft} onChange={onChange} autoFocus />
+      <StepInput step={step} value={draft} onChange={onChange} autoFocus />
 
       <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{t(`steps.${step}.hint`)}</p>
-      <Nudge key={step} step={step} />
+      <Nudge step={step} />
 
       {/* Phones: the buttons stay in thumb reach above the bottom navigation. */}
       <div className="sticky bottom-[calc(5.5rem+env(safe-area-inset-bottom))] -mx-5 mt-6 flex items-center gap-2 border-t border-line bg-surface/95 px-5 pt-4 pb-1 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
