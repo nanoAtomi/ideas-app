@@ -59,8 +59,8 @@ const adminIdeas: AdminIdea[] = [
 ];
 
 const board: BoardIdea[] = [
-  { ...idea, id: 20, name_idea: '🍽️ Dishduty', author_name: null, votes: 3, voted: false, mine: true },
-  { ...idea, id: 21, name_idea: '🌱 Plant pal', problem: 'Plants keep dying', author_name: 'bob', votes: 1, voted: false, mine: false, image_links: [] },
+  { ...idea, id: 20, name_idea: '🍽️ Dishduty', author_name: null, votes: 3, voted: false, mine: true, comments: 0 },
+  { ...idea, id: 21, name_idea: '🌱 Plant pal', problem: 'Plants keep dying', author_name: 'bob', votes: 1, voted: false, mine: false, image_links: [], comments: 2 },
 ];
 
 let fetchMock: ReturnType<typeof vi.fn>;
@@ -284,5 +284,29 @@ describe('ideas', () => {
     const post = fetchMock.mock.calls.find(([url, init]) => url === '/api/ideas' && init?.method === 'POST')!;
     expect(JSON.parse(post[1].body)).toMatchObject({ problem: 'Recurring tasks by weekday', concerns: 'Todo', visibility: 'private' });
     expect(await screen.findByText('✓ Saved')).toBeInTheDocument();
+  });
+
+  it('talks under a board idea', async () => {
+    const user = userEvent.setup();
+    fetchMock.mockImplementation(async (url: string, init?: RequestInit) => {
+      if (url === '/api/me') return json(me);
+      if (url.startsWith('/api/board?')) return json(board);
+      if (url === '/api/board/21/comments' && init?.method === 'POST')
+        return json({ id: 2, body: 'Me too', author_name: 'alice', by_idea_author: false, mine: true, can_delete: true, created_at: '2026-10-14T10:00:00Z' }, 201);
+      if (url === '/api/board/21/comments')
+        return json([{ id: 1, body: 'My basil died too', author_name: 'carol', by_idea_author: false, mine: false, can_delete: false, created_at: '2026-10-13T10:00:00Z' }]);
+      return json({ detail: 'Not found' }, 404);
+    });
+    renderApp('/');
+    const card = (await screen.findByRole('button', { name: '🌱 Plant pal' })).closest('article')!;
+    expect(within(card).getByText('· 💬 2')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: '🌱 Plant pal' }));
+    const dialog = screen.getByRole('dialog', { name: '🌱 Plant pal' });
+    expect(await within(dialog).findByText('My basil died too')).toBeInTheDocument();
+    expect(within(dialog).queryByRole('button', { name: 'Delete comment' })).not.toBeInTheDocument();
+    await user.type(within(dialog).getByRole('textbox', { name: 'Write a comment' }), 'Me too');
+    await user.click(within(dialog).getByRole('button', { name: 'Send' }));
+    const post = fetchMock.mock.calls.find(([url, init]) => url === '/api/board/21/comments' && init?.method === 'POST')!;
+    expect(JSON.parse(post[1].body)).toEqual({ body: 'Me too' });
   });
 });

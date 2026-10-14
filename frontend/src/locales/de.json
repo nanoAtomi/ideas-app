@@ -368,5 +368,14 @@
     "saved_other": "{{count}} gespeichert",
     "privateHint": "Nur Admins sehen diese Notizen",
     "adminsOnly": "Die Schnellnotiz ist das Notizbuch der Admins. Deine Idee reichst du hier ein:"
+  },
+  "comments": {
+    "title": "Kommentare",
+    "empty": "Noch keine Kommentare - fang an!",
+    "author": "Autor",
+    "write": "Kommentar schreiben",
+    "placeholder": "Was denkst du dazu?",
+    "send": "Senden",
+    "delete": "Kommentar löschen"
   }
 }

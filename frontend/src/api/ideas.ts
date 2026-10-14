@@ -171,6 +171,40 @@ export interface BoardIdea extends Omit<IdeaFields, 'visibility' | 'anonymous'> 
   votes: number;
   voted: boolean;
   mine: boolean;
+  comments: number;
+}
+
+export interface IdeaComment {
+  id: number;
+  body: string;
+  /** null = the idea's author on an anonymous idea. */
+  author_name: string | null;
+  by_idea_author: boolean;
+  mine: boolean;
+  can_delete: boolean;
+  created_at: string;
+}
+
+export function useComments(ideaId: number) {
+  return useQuery({ queryKey: ['comments', ideaId], queryFn: () => api<IdeaComment[]>(`/api/board/${ideaId}/comments`) });
+}
+
+export function useCommentActions(ideaId: number) {
+  const queryClient = useQueryClient();
+  const onSuccess = () => {
+    void queryClient.invalidateQueries({ queryKey: ['comments', ideaId] });
+    void queryClient.invalidateQueries({ queryKey: ['board'] });
+  };
+  return {
+    add: useMutation({
+      mutationFn: (body: string) => api<IdeaComment>(`/api/board/${ideaId}/comments`, { method: 'POST', body: { body } }),
+      onSuccess,
+    }),
+    remove: useMutation({
+      mutationFn: (id: number) => api<null>(`/api/board/${ideaId}/comments/${id}`, { method: 'DELETE' }),
+      onSuccess,
+    }),
+  };
 }
 
 export type BoardSort = 'votes' | 'new';

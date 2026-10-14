@@ -368,5 +368,14 @@
     "saved_other": "{{count}} saved",
     "privateHint": "Only admins see these notes",
     "adminsOnly": "The quick note is the admins' notebook. Submit your idea here:"
+  },
+  "comments": {
+    "title": "Comments",
+    "empty": "No comments yet - start one!",
+    "author": "Author",
+    "write": "Write a comment",
+    "placeholder": "What do you think?",
+    "send": "Send",
+    "delete": "Delete comment"
   }
 }

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useBoard, useVote, type BoardIdea, type BoardSort } from '../api/ideas';
+import { Comments } from '../components/Comments';
 import { Dialog } from '../components/Dialog';
 import { EmptyState } from '../components/EmptyState';
 import { ImageStrip } from '../components/Images';
@@ -98,6 +99,7 @@ function BoardCard({ idea, onOpen }: { idea: BoardIdea; onOpen: () => void }) {
         <span>{idea.author_name ? idea.author_name : `🙈 ${t('visibility.anonymous.short')}`}</span>
         <span>· {formatDate(idea.created_at, i18n.language)}</span>
         {idea.frequency && <span title={t(`frequency.${idea.frequency}.label`)}>· {t(`frequency.${idea.frequency}.icon`)}</span>}
+        {idea.comments > 0 && <span title={t('comments.title')}>· 💬 {idea.comments}</span>}
         <span className="ml-auto">
           <VoteButton idea={idea} />
         </span>
@@ -167,6 +169,7 @@ function IdeaDialog({ idea, onClose }: { idea: BoardIdea; onClose: () => void })
           ))}
       </dl>
       <ImageStrip links={idea.image_links} />
+      <Comments ideaId={idea.id} />
     </Dialog>
   );
 }
