@@ -249,7 +249,9 @@
     "purgeText": "The idea is deleted completely – for you too. This can't be undone.",
     "purgeConfirm": "Delete for good",
     "filterApps": "Filter by app",
-    "allIdeas": "All"
+    "allIdeas": "All",
+    "toTodo": "Copy to Todo",
+    "fromIdeas": "From Ideas"
   },
   "error": {
     "notSignedIn": "You're not signed in. Reload the page to sign in.",

@@ -249,7 +249,9 @@
     "purgeText": "Die Idee wird komplett gelöscht – auch für dich. Das lässt sich nicht rückgängig machen.",
     "purgeConfirm": "Endgültig löschen",
     "filterApps": "Nach App filtern",
-    "allIdeas": "Alle"
+    "allIdeas": "Alle",
+    "toTodo": "In Todo übernehmen",
+    "fromIdeas": "Aus Ideen"
   },
   "error": {
     "notSignedIn": "Du bist nicht angemeldet. Lade die Seite neu, um dich anzumelden.",

@@ -22,6 +22,7 @@ import { Switch } from '../components/Switch';
 import { ImageStrip } from '../components/Images';
 import { STEPS } from '../components/IdeaInputs';
 import { ConcernsTag, formatDate, STATUS_STYLE } from '../components/StatusBadge';
+import { todoTaskUrl } from '../platformApps';
 import { PageTitle } from './Pages';
 
 /** Kanban over all ideas: drag a card into another column to change its status. */
@@ -205,6 +206,10 @@ function IdeaDetail({ idea, onClose }: { idea: AdminIdea; onClose: () => void })
   const { update, purge } = useAdminActions();
   const [reply, setReply] = useState(idea.admin_reply ?? '');
   const [confirmPurge, setConfirmPurge] = useState(false);
+  const toTodo = todoTaskUrl(
+    idea.name_idea ?? idea.problem.slice(0, 120),
+    [idea.problem, idea.helps, idea.details, `${t('admin.fromIdeas')}: ${window.location.origin}/admin/ideas/${idea.id}/history`].filter(Boolean).join('\n\n'),
+  );
 
   const answers: [string, string | null][] = STEPS.filter((step) => step !== 'visibility').map((step) => [
     t(`steps.${step}.question`),
@@ -242,6 +247,11 @@ function IdeaDetail({ idea, onClose }: { idea: AdminIdea; onClose: () => void })
         <Link to={`/admin/ideas/${idea.id}/history`} className="min-h-10 rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-ink/5 dark:text-slate-300 dark:hover:bg-white/10">
           🕘 {t('mine.history')}
         </Link>
+        {toTodo && (
+          <a href={toTodo} target="_blank" rel="noopener" className="min-h-10 rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-ink/5 dark:text-slate-300 dark:hover:bg-white/10">
+            ✅ {t('admin.toTodo')}
+          </a>
+        )}
       </div>
       {idea.admin_edit_reason && <p className="mt-3 text-sm text-amber-800 dark:text-amber-200">🛡️ {idea.admin_edit_reason}</p>}
 
