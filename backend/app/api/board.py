@@ -26,6 +26,8 @@ class BoardIdea(BaseModel):
     name_idea: str | None
     details: str | None
     image_links: list[str]
+    # The app it is for; None = a new app.
+    concerns: str | None
     status: str
     created_at: datetime
     # None = anonymous.
@@ -73,6 +75,7 @@ def board(
             name_idea=idea.name_idea,
             details=idea.details,
             image_links=idea.image_links or [],
+            concerns=idea.concerns,
             status=idea.status,
             created_at=idea.created_at,
             author_name=None if idea.anonymous else idea.author.display_name,

@@ -1,18 +1,20 @@
-"""The signed-in user's own ideas: submit, list, edit, delete.
+"""The signed-in user's own ideas: submit, list, edit, delete, versions.
 
 Only the author reaches an idea here. Deleting is a soft delete - the idea disappears
-for everyone but admins (the UI says so before deleting)."""
+for everyone but admins (the UI says so before deleting). Every edit keeps a version
+(app/versions.py) that can be compared and restored."""
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Response
 from pydantic import BaseModel, Field, field_validator
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 
 from ..auth import current_user
 from ..db import get_db
 from ..images import normalize_image_links
-from ..models import FREQUENCIES, VISIBILITIES, Idea, User, utcnow
+from ..models import FREQUENCIES, VISIBILITIES, Idea, IdeaVersion, User, utcnow
+from ..versions import apply_edit, record_first, version, versions_of
 
 router = APIRouter(prefix="/api/ideas", tags=["ideas"])
 
@@ -38,6 +40,8 @@ class IdeaFields(BaseModel):
     anonymous: bool = False
     # imgur links, normalized to direct image URLs.
     image_links: list[str] = Field(default_factory=list, max_length=10)
+    # Which app it is for: empty = a new app.
+    concerns: str | None = Field(default=None, max_length=60)
 
     @field_validator("image_links")
     @classmethod
@@ -52,7 +56,7 @@ class IdeaFields(BaseModel):
             raise ValueError("problem must not be blank")
         return value
 
-    @field_validator("audience", "helps", "name_idea", "details")
+    @field_validator("audience", "helps", "name_idea", "details", "concerns")
     @classmethod
     def _optional(cls, value: str | None) -> str | None:
         return _clean(value)
@@ -84,13 +88,36 @@ class IdeaOut(BaseModel):
     visibility: str
     anonymous: bool
     image_links: list[str]
+    concerns: str | None
     status: str
     admin_reply: str | None
+    # An admin changed the texts (shown to the author until they edit again).
+    admin_edit_reason: str | None
+    admin_edited_at: datetime | None
     replied_at: datetime | None
     created_at: datetime
     updated_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class VersionOut(BaseModel):
+    number: int
+    by_admin: bool
+    # Who saved it; for an admin's change the author only learns "an admin".
+    editor_name: str | None
+    reason: str | None
+    changed: list[str]
+    fields: dict
+    created_at: datetime
+
+
+def version_out(v: IdeaVersion, show_admin_names: bool) -> VersionOut:
+    name = v.editor.display_name if v.editor and (show_admin_names or not v.by_admin) else None
+    return VersionOut(
+        number=v.number, by_admin=v.by_admin, editor_name=name, reason=v.reason,
+        changed=v.changed, fields=v.fields, created_at=v.created_at,
+    )
 
 
 def _own_idea(db: Session, user: User, idea_id: int) -> Idea:
@@ -117,8 +144,23 @@ def submit_idea(body: IdeaFields, user: User = Depends(current_user), db: Sessio
     # New ideas go to the top of the admin board's "new" column.
     idea = Idea(author_id=user.id, **body.model_dump(), position=-now.timestamp(), created_at=now, updated_at=now)
     db.add(idea)
+    db.flush()
+    record_first(db, idea, user)
     db.commit()
     return idea
+
+
+@router.get("/concerns", response_model=list[str])
+def known_concerns(user: User = Depends(current_user), db: Session = Depends(get_db)) -> list[str]:
+    """App names ideas were written for, as choices in the wizard - from the board and
+    the user's own ideas (private ideas of others stay private)."""
+    rows = db.scalars(
+        select(Idea.concerns)
+        .where(Idea.concerns.is_not(None), Idea.deleted_at.is_(None))
+        .where(or_(Idea.author_id == user.id, (Idea.visibility == "board") & Idea.hidden.is_(False)))
+        .distinct()
+    )
+    return sorted(set(rows), key=str.casefold)
 
 
 @router.get("/{idea_id}", response_model=IdeaOut)
@@ -129,9 +171,24 @@ def get_idea(idea_id: int, user: User = Depends(current_user), db: Session = Dep
 @router.put("/{idea_id}", response_model=IdeaOut)
 def edit_idea(idea_id: int, body: IdeaFields, user: User = Depends(current_user), db: Session = Depends(get_db)) -> Idea:
     idea = _own_idea(db, user, idea_id)
-    for key, value in body.model_dump().items():
-        setattr(idea, key, value)
-    idea.updated_at = utcnow()
+    apply_edit(db, idea, body.model_dump(), user)
+    db.commit()
+    return idea
+
+
+@router.get("/{idea_id}/versions", response_model=list[VersionOut])
+def idea_versions(idea_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)) -> list[VersionOut]:
+    return [version_out(v, show_admin_names=False) for v in versions_of(db, _own_idea(db, user, idea_id))]
+
+
+@router.post("/{idea_id}/versions/{number}/restore", response_model=IdeaOut)
+def restore_version(idea_id: int, number: int, user: User = Depends(current_user), db: Session = Depends(get_db)) -> Idea:
+    """Brings an old state back as a new version - nothing in the history is lost."""
+    idea = _own_idea(db, user, idea_id)
+    old = version(db, idea, number)
+    if old is None:
+        raise HTTPException(status_code=404, detail="Version not found")
+    apply_edit(db, idea, IdeaFields(**old.fields).model_dump(), user)
     db.commit()
     return idea
 

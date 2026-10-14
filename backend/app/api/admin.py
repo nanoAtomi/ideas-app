@@ -1,5 +1,6 @@
 """Admin board: every idea (also private and deleted ones), status, order, reply, hide,
-and permanent deletion (e.g. on a GDPR request)."""
+editing the texts (with a reason the author sees - e.g. missing details, or against the
+rules), versions, and permanent deletion (e.g. on a GDPR request)."""
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Response
@@ -10,7 +11,8 @@ from sqlalchemy.orm import Session, joinedload
 from ..auth import admin_user
 from ..db import get_db
 from ..models import STATUSES, Idea, User, utcnow
-from .ideas import IdeaOut
+from ..versions import apply_edit, version, versions_of
+from .ideas import IdeaFields, IdeaOut, VersionOut, version_out
 
 router = APIRouter(prefix="/api/admin/ideas", tags=["admin"])
 
@@ -46,6 +48,23 @@ class AdminIdeaUpdate(BaseModel):
         return value
 
 
+class Reason(BaseModel):
+    # Shown to the author: why an admin changed their idea.
+    reason: str = Field(min_length=3, max_length=300)
+
+    @field_validator("reason")
+    @classmethod
+    def _reason(cls, value: str) -> str:
+        value = value.strip()
+        if len(value) < 3:
+            raise ValueError("reason must say why")
+        return value
+
+
+class AdminEdit(IdeaFields, Reason):
+    """New answers plus why they were changed."""
+
+
 def _idea(db: Session, idea_id: int) -> Idea:
     idea = db.get(Idea, idea_id)
     if idea is None:
@@ -72,6 +91,31 @@ def update_idea(idea_id: int, body: AdminIdeaUpdate, _: User = Depends(admin_use
         if reply != idea.admin_reply:
             idea.admin_reply = reply
             idea.replied_at = utcnow() if reply else None
+    db.commit()
+    return idea
+
+
+@router.put("/{idea_id}", response_model=AdminIdeaOut)
+def edit_idea(idea_id: int, body: AdminEdit, admin: User = Depends(admin_user), db: Session = Depends(get_db)) -> Idea:
+    idea = _idea(db, idea_id)
+    fields = IdeaFields.model_validate(body.model_dump(exclude={"reason"})).model_dump()
+    apply_edit(db, idea, fields, admin, by_admin=True, reason=body.reason)
+    db.commit()
+    return idea
+
+
+@router.get("/{idea_id}/versions", response_model=list[VersionOut])
+def idea_versions(idea_id: int, _: User = Depends(admin_user), db: Session = Depends(get_db)) -> list[VersionOut]:
+    return [version_out(v, show_admin_names=True) for v in versions_of(db, _idea(db, idea_id))]
+
+
+@router.post("/{idea_id}/versions/{number}/restore", response_model=AdminIdeaOut)
+def restore_version(idea_id: int, number: int, body: Reason, admin: User = Depends(admin_user), db: Session = Depends(get_db)) -> Idea:
+    idea = _idea(db, idea_id)
+    old = version(db, idea, number)
+    if old is None:
+        raise HTTPException(status_code=404, detail="Version not found")
+    apply_edit(db, idea, IdeaFields(**old.fields).model_dump(), admin, by_admin=True, reason=body.reason)
     db.commit()
     return idea
 
