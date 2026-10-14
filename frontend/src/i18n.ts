@@ -3,11 +3,13 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 import de from './locales/de.json';
 import en from './locales/en.json';
+import { cookieDomain, LANG_COOKIE } from './prefs';
 
 export const LANGUAGES = ['en', 'de'] as const;
 export type Language = (typeof LANGUAGES)[number];
 
-// Browser language by default; the user's saved choice (from /api/me) overrides it.
+// The platform-wide choice (cookie on the parent domain, shared with the portal and
+// every app), else the browser language.
 void i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -16,7 +18,12 @@ void i18n
     supportedLngs: LANGUAGES,
     fallbackLng: 'en',
     interpolation: { escapeValue: false },
-    detection: { order: ['localStorage', 'navigator'], caches: ['localStorage'] },
+    detection: {
+      order: ['cookie', 'navigator'],
+      lookupCookie: LANG_COOKIE,
+      caches: ['cookie'],
+      cookieOptions: { path: '/', sameSite: 'lax', domain: cookieDomain() },
+    },
   });
 
 export default i18n;

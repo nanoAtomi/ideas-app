@@ -1,29 +1,25 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Routes } from 'react-router-dom';
+import { Link, NavLink, Route, Routes } from 'react-router-dom';
 import { ApiError } from './api/client';
-import { useMe, useUpdateMe } from './api/me';
-import { AppHeader } from './components/AppHeader';
+import { useMe } from './api/me';
 import { BottomNav } from './components/BottomNav';
-import type { Language } from './i18n';
+import { menuItemClass, PlatformBar } from './components/PlatformBar';
 import { EditPage } from './pages/EditPage';
 import { MinePage } from './pages/MinePage';
 import { DiscoverPage } from './pages/DiscoverPage';
 import { SubmitPage } from './pages/SubmitPage';
+
+const navLink = ({ isActive }: { isActive: boolean }) =>
+  `rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors ${
+    isActive ? 'bg-ink/5 text-ink dark:bg-white/10' : 'text-slate-500 hover:text-ink dark:text-slate-400'
+  }`;
 
 const AdminPage = lazy(() => import('./pages/AdminPage').then((m) => ({ default: m.AdminPage })));
 
 export function App() {
   const { t, i18n } = useTranslation();
   const me = useMe();
-  const updateMe = useUpdateMe();
-
-  // A language saved on the server (other device) wins over the browser default.
-  useEffect(() => {
-    if (me.data?.language && me.data.language !== i18n.resolvedLanguage) {
-      void i18n.changeLanguage(me.data.language);
-    }
-  }, [me.data?.language, i18n]);
 
   useEffect(() => {
     document.documentElement.lang = i18n.resolvedLanguage ?? 'en';
@@ -46,14 +42,54 @@ export function App() {
     );
   }
 
-  const changeLanguage = (language: Language) => {
-    void i18n.changeLanguage(language);
-    updateMe.mutate({ language });
-  };
-
   return (
     <>
-      <AppHeader me={me.data} onLanguageChange={changeLanguage} />
+      <PlatformBar
+        appName={t('app.name')}
+        appIcon={
+          <span aria-hidden className="grid size-8 place-items-center rounded-xl bg-gradient-to-br from-spark-from to-spark-to text-base shadow-sm shadow-orange-500/30">
+            💡
+          </span>
+        }
+        user={{
+          name: me.data.display_name,
+          email: me.data.email,
+          portalUrl: me.data.portal_url,
+          logoutUrl: me.data.logout_url,
+          feedbackUrl: me.data.feedback_url,
+        }}
+        navLabel={t('nav.main')}
+        nav={
+          <>
+            <NavLink to="/" end className={navLink}>
+              {t('nav.discover')}
+            </NavLink>
+            <NavLink to="/mine" className={navLink}>
+              {t('nav.mine')}
+            </NavLink>
+            {me.data.is_admin && (
+              <NavLink to="/admin" className={navLink}>
+                {t('nav.admin')}
+              </NavLink>
+            )}
+          </>
+        }
+        menuItems={
+          me.data.is_admin && (
+            <Link to="/admin" className={`${menuItemClass} sm:hidden`}>
+              🗂️ {t('nav.admin')}
+            </Link>
+          )
+        }
+        actions={
+          <Link
+            to="/submit"
+            className="rounded-full bg-gradient-to-r from-spark-from to-spark-to px-4 py-2 text-sm font-semibold text-white shadow-md shadow-orange-500/25 transition hover:brightness-105"
+          >
+            💡 {t('nav.submit')}
+          </Link>
+        }
+      />
       <main className="mx-auto max-w-6xl px-4 pt-5 pb-[calc(7rem+env(safe-area-inset-bottom))] sm:py-8">
         <Routes>
           <Route path="/" element={<DiscoverPage />} />

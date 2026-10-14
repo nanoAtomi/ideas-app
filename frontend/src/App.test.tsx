@@ -52,8 +52,11 @@ describe('App', () => {
     renderApp();
     expect(await screen.findByRole('heading', { name: 'What bugs you in everyday life?' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /portal/i })).toHaveAttribute('href', 'https://portal.example');
-    expect(screen.getAllByRole('link', { name: 'Sign out' })[0]).toHaveAttribute('href', 'https://portal.example/logout');
-    expect(screen.getAllByRole('link', { name: 'Feedback' })[0]).toHaveAttribute('href', 'https://portal.example/feedback?app=ideas');
+    await userEvent.click(screen.getByRole('button', { name: 'Account menu' }));
+    expect(screen.getByText('alice@example.com')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Edit profile/ })).toHaveAttribute('href', 'https://portal.example/profile');
+    expect(screen.getByRole('link', { name: /Sign out/ })).toHaveAttribute('href', 'https://portal.example/logout');
+    expect(screen.getByRole('link', { name: /Feedback/ })).toHaveAttribute('href', 'https://portal.example/feedback?app=ideas');
   });
 
   it('offers the admin board only to admins', async () => {
@@ -70,14 +73,20 @@ describe('App', () => {
     expect(within(nav).getByRole('link', { name: 'Admin' })).toHaveAttribute('href', '/admin');
   });
 
-  it('switches the language and saves it', async () => {
+  it('switches language and appearance platform-wide', async () => {
     renderApp('/mine');
     expect(await screen.findByRole('heading', { name: 'My ideas' })).toBeInTheDocument();
-    const switcher = screen.getAllByRole('group', { name: 'Language' })[0];
-    expect(within(switcher).getByRole('button', { name: 'en' })).toHaveAttribute('aria-pressed', 'true');
-    await userEvent.click(within(switcher).getByRole('button', { name: 'de' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Account menu' }));
+    expect(screen.getByRole('button', { name: 'EN' })).toHaveAttribute('aria-pressed', 'true');
+    await userEvent.click(screen.getByRole('button', { name: 'DE' }));
     expect(await screen.findByRole('heading', { name: 'Meine Ideen' })).toBeInTheDocument();
-    expect(fetchMock).toHaveBeenCalledWith('/api/me', expect.objectContaining({ method: 'PATCH', body: '{"language":"de"}' }));
+    expect(document.cookie).toContain('nicasso-lang=de');
+
+    await userEvent.click(screen.getByRole('button', { name: /Dunkel/ }));
+    expect(document.documentElement).toHaveClass('dark');
+    expect(document.cookie).toContain('nicasso-theme=dark');
+    await userEvent.click(screen.getByRole('button', { name: /System/ }));
+    expect(document.cookie).not.toContain('nicasso-theme');
   });
 
   it('hides platform links outside the gateway', async () => {
@@ -85,6 +94,7 @@ describe('App', () => {
     renderApp();
     await screen.findByRole('heading', { name: 'What bugs you in everyday life?' });
     expect(screen.queryByRole('link', { name: /portal/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: 'Sign out' })).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'Account menu' }));
+    expect(screen.queryByRole('link', { name: /Sign out/ })).not.toBeInTheDocument();
   });
 });

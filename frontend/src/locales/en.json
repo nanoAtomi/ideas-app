@@ -15,13 +15,18 @@
     "mine": "My ideas",
     "admin": "Admin"
   },
-  "header": {
+  "platform": {
     "portal": "Portal",
     "portalTitle": "Back to the app portal",
-    "signOut": "Sign out",
-    "feedback": "Feedback",
+    "menu": "Account menu",
     "language": "Language",
-    "menu": "Menu"
+    "theme": "Appearance",
+    "themeSystem": "System",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "profile": "Edit profile",
+    "feedback": "Feedback on this app",
+    "signOut": "Sign out"
   },
   "discover": {
     "kicker": "Idea board",

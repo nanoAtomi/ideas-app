@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
-/* Platform design tokens (nicasso UI guidelines); dark values follow the device. */
+/* Dark mode follows the platform-wide choice (prefs.ts sets class "dark" on <html>). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Platform design tokens (nicasso UI guidelines). */
 :root {
   color-scheme: light dark;
   --brand: #3e6ae1;
@@ -11,15 +14,13 @@
   --line: #e2e8f0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --brand: #4f7bf0;
-    --brand-hover: #6b8ff3;
-    --ink: #f1f5f9;
-    --canvas: #0c0d10;
-    --surface: #15161b;
-    --line: #262832;
-  }
+:root.dark {
+  --brand: #4f7bf0;
+  --brand-hover: #6b8ff3;
+  --ink: #f1f5f9;
+  --canvas: #0c0d10;
+  --surface: #15161b;
+  --line: #262832;
 }
 
 @theme inline {

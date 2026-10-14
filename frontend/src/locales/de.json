@@ -15,13 +15,18 @@
     "mine": "Meine Ideen",
     "admin": "Admin"
   },
-  "header": {
+  "platform": {
     "portal": "Portal",
     "portalTitle": "Zurück zum App-Portal",
-    "signOut": "Abmelden",
-    "feedback": "Feedback",
+    "menu": "Konto-Menü",
     "language": "Sprache",
-    "menu": "Menü"
+    "theme": "Darstellung",
+    "themeSystem": "System",
+    "themeLight": "Hell",
+    "themeDark": "Dunkel",
+    "profile": "Profil bearbeiten",
+    "feedback": "Feedback zu dieser App",
+    "signOut": "Abmelden"
   },
   "discover": {
     "kicker": "Ideen-Board",
