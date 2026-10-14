@@ -73,9 +73,14 @@ export function App() {
               {t('nav.mine')}
             </NavLink>
             {me.data.is_admin && (
-              <NavLink to="/admin" className={navLink}>
-                {t('nav.admin')}
-              </NavLink>
+              <>
+                <NavLink to="/quick" className={navLink}>
+                  {t('quick.short')}
+                </NavLink>
+                <NavLink to="/admin" className={navLink}>
+                  {t('nav.admin')}
+                </NavLink>
+              </>
             )}
           </>
         }
@@ -84,9 +89,6 @@ export function App() {
             <>
               <Link to="/quick" className={menuItemClass}>
                 ✍️ {t('quick.menu')}
-              </Link>
-              <Link to="/admin" className={`${menuItemClass} sm:hidden`}>
-                🗂️ {t('nav.admin')}
               </Link>
             </>
           )
@@ -132,7 +134,7 @@ export function App() {
           </footer>
         )}
       </main>
-      {!quick && <BottomNav />}
+      {!quick && <BottomNav isAdmin={me.data.is_admin} />}
     </>
   );
 }

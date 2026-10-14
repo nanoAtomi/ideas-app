@@ -7,7 +7,7 @@ const tab = ({ isActive }: { isActive: boolean }) =>
   }`;
 
 /** Phones: thumb-reach navigation with the big 💡 "submit" button in the middle. */
-export function BottomNav() {
+export function BottomNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const { t } = useTranslation();
   return (
     <nav
@@ -18,6 +18,13 @@ export function BottomNav() {
         <span aria-hidden className="text-xl leading-none">🧭</span>
         {t('nav.discover')}
       </NavLink>
+      {/* Admins: their notebook and the board, one on each side of the big button. */}
+      {isAdmin && (
+        <NavLink to="/quick" className={tab}>
+          <span aria-hidden className="text-xl leading-none">✍️</span>
+          {t('quick.short')}
+        </NavLink>
+      )}
       <NavLink to="/submit" aria-label={t('nav.submit')} className="flex flex-1 flex-col items-center gap-0.5 pb-1.5 text-[11px] font-semibold">
         <span
           aria-hidden
@@ -31,6 +38,12 @@ export function BottomNav() {
         <span aria-hidden className="text-xl leading-none">📬</span>
         {t('nav.mine')}
       </NavLink>
+      {isAdmin && (
+        <NavLink to="/admin" className={tab}>
+          <span aria-hidden className="text-xl leading-none">🗂️</span>
+          {t('nav.admin')}
+        </NavLink>
+      )}
     </nav>
   );
 }

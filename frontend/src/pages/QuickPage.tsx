@@ -1,18 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { EMPTY_IDEA, useConcerns, useIdeaActions } from '../api/ideas';
 import { LIMITS } from '../components/IdeaInputs';
+import { useHomeScreenIdentity } from '../homeScreen';
 
 /**
  * The admin's notebook in seconds: one field, which app it is for, save. Saved as a
  * private idea (only admins see it), so it lands on the admin board with versions like
  * any other. Added to the phone's home screen from here, it opens straight into this
- * page: the page swaps in its own manifest and icon (index.html has the app's).
+ * page (useHomeScreenIdentity swaps in its own manifest and icon).
  */
 export function QuickPage({ isAdmin }: { isAdmin: boolean }) {
   const { t } = useTranslation();
-  useHomeScreenIdentity();
+  useHomeScreenIdentity({ manifest: '/quick.webmanifest', icon: '/icons/quick-180.png', title: 'Idee +' });
   if (!isAdmin) {
     return (
       <div className="mx-auto max-w-md rounded-[28px] border border-line bg-surface p-6 text-center shadow-sm">
@@ -117,18 +118,4 @@ function QuickForm() {
       </p>
     </form>
   );
-}
-
-/** While this page is open, "Add to Home Screen" picks up its own name, icon and start page. */
-function useHomeScreenIdentity() {
-  useEffect(() => {
-    const swaps: [Element | null, string, string][] = [
-      [document.querySelector('link[rel="manifest"]'), 'href', '/quick.webmanifest'],
-      [document.querySelector('link[rel="apple-touch-icon"]'), 'href', '/icons/quick-180.png'],
-      [document.querySelector('meta[name="apple-mobile-web-app-title"]'), 'content', 'Idee +'],
-    ];
-    const before = swaps.map(([el, attr]) => el?.getAttribute(attr) ?? null);
-    swaps.forEach(([el, attr, value]) => el?.setAttribute(attr, value));
-    return () => swaps.forEach(([el, attr], i) => before[i] !== null && el?.setAttribute(attr, before[i]!));
-  }, []);
 }
