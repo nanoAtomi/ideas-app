@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from './client';
 
 export const FREQUENCIES = ['daily', 'weekly', 'monthly', 'rarely'] as const;
-export const STATUSES = ['new', 'seen', 'planned', 'built', 'not_now'] as const;
+export const STATUSES = ['new', 'seen', 'planned', 'in_development', 'built', 'not_now'] as const;
 export type Frequency = (typeof FREQUENCIES)[number];
 export type Status = (typeof STATUSES)[number];
 export type Visibility = 'board' | 'private';

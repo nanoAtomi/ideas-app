@@ -30,7 +30,7 @@ class User(Base):
 # Answers to the wizard's questions; values are stored as given (validated in the API).
 FREQUENCIES = ("daily", "weekly", "monthly", "rarely")
 VISIBILITIES = ("board", "private")  # "private" = only admins see it
-STATUSES = ("new", "seen", "planned", "built", "not_now")
+STATUSES = ("new", "seen", "planned", "in_development", "built", "not_now")
 
 
 class Idea(Base):

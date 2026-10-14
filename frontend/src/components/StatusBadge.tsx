@@ -5,6 +5,7 @@ export const STATUS_STYLE: Record<Status, { icon: string; badge: string; dot: st
   new: { icon: '✨', badge: 'bg-sky-100 text-sky-800 dark:bg-sky-500/15 dark:text-sky-300', dot: 'bg-sky-500' },
   seen: { icon: '👀', badge: 'bg-violet-100 text-violet-800 dark:bg-violet-500/15 dark:text-violet-300', dot: 'bg-violet-500' },
   planned: { icon: '🛠️', badge: 'bg-amber-100 text-amber-800 dark:bg-amber-500/15 dark:text-amber-300', dot: 'bg-amber-500' },
+  in_development: { icon: '🧑‍💻', badge: 'bg-orange-100 text-orange-800 dark:bg-orange-500/15 dark:text-orange-300', dot: 'bg-orange-500' },
   built: { icon: '🚀', badge: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300', dot: 'bg-emerald-500' },
   not_now: { icon: '💤', badge: 'bg-slate-200 text-slate-700 dark:bg-slate-500/20 dark:text-slate-300', dot: 'bg-slate-400' },
 };

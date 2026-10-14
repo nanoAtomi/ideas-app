@@ -36,6 +36,12 @@ def test_status_order_hide_and_reply(client):
     assert (cleared["admin_reply"], cleared["replied_at"]) == (None, None)
 
 
+def test_in_development_column(client):
+    idea = submit(client)
+    url = f"/api/admin/ideas/{idea['id']}"
+    assert client.patch(url, json={"status": "in_development"}, headers=BOSS).json()["status"] == "in_development"
+
+
 def test_rejects_unknown_status(client):
     idea = submit(client)
     assert client.patch(f"/api/admin/ideas/{idea['id']}", json={"status": "done"}, headers=BOSS).status_code == 422

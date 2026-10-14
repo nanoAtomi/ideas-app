@@ -192,6 +192,7 @@
     "new": "Neu",
     "seen": "Angeschaut",
     "planned": "In Planung",
+    "in_development": "In Entwicklung",
     "built": "Umgesetzt",
     "not_now": "Nicht jetzt"
   },
