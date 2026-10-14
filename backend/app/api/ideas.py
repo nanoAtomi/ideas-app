@@ -5,12 +5,14 @@ for everyone but admins (the UI says so before deleting). Every edit keeps a ver
 (app/versions.py) that can be compared and restored."""
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, Response
 from pydantic import BaseModel, Field, field_validator
 from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 
-from ..auth import current_user
+from ..auth import current_user, has_role
+from ..config import settings
+from ..portal_mail import notify_later
 from ..db import get_db
 from ..images import normalize_image_links
 from ..models import FREQUENCIES, VISIBILITIES, Idea, IdeaVersion, User, utcnow
@@ -138,8 +140,30 @@ def my_ideas(user: User = Depends(current_user), db: Session = Depends(get_db)) 
     )
 
 
+def new_idea_mail(idea: Idea, author: User) -> tuple[str, str]:
+    """Subject and text for the admins (German: the operator's language)."""
+    title = idea.name_idea or idea.problem[:60]
+    lines = [
+        f"{'Anonym, von ' if idea.anonymous else 'Von '}{author.display_name}"
+        + (" · nur für Admins" if idea.visibility == "private" else " · auf dem Board"),
+        f"Für: {idea.concerns or 'eine neue App'}",
+        "",
+        idea.problem,
+    ]
+    if idea.helps:
+        lines += ["", f"Wie eine App helfen würde: {idea.helps}"]
+    lines += ["", f"Ansehen: {settings.public_url}/admin"]
+    return f"Neue Idee: {title}", "\n".join(lines)
+
+
 @router.post("", response_model=IdeaOut, status_code=201)
-def submit_idea(body: IdeaFields, user: User = Depends(current_user), db: Session = Depends(get_db)) -> Idea:
+def submit_idea(
+    body: IdeaFields,
+    request: Request,
+    background: BackgroundTasks,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> Idea:
     now = utcnow()
     # New ideas go to the top of the admin board's "new" column.
     idea = Idea(author_id=user.id, **body.model_dump(), position=-now.timestamp(), created_at=now, updated_at=now)
@@ -147,6 +171,9 @@ def submit_idea(body: IdeaFields, user: User = Depends(current_user), db: Sessio
     db.flush()
     record_first(db, idea, user)
     db.commit()
+    # Tell the admins - not about their own notes (e.g. the /quick page).
+    if not has_role(request, "admin"):
+        background.add_task(notify_later, *new_idea_mail(idea, user))
     return idea
 
 

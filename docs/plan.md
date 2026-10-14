@@ -37,7 +37,7 @@ questions plus free text, everyone can browse and vote, and the admin picks what
 | **P3** Open to everyone (platform repo) | done by the platform's access modes (`multi-app` docs/access-and-roles.md): Ideas is "open" | ✅ |
 | **P4** Wizard on iOS, "in development" | wizard shows exactly one question on the iPhone home-screen app too; Kanban column "in development" | column built; iOS: waiting for the owner's check (stale home-screen app?) |
 | **P5** Versions, admin edit, notebook | versions with compare/restore; admin edit with reason; rules page; "concerns" field and filter; `/quick` capture page | built, deploy pending |
-| **P6** Talk and hand-over | comments on board ideas; "copy to Todo" as a confirm-first link (`todo/?add=&notes=`, no token API); mail to the admin on a new idea (open: how apps send mail) | comments + copy built; mail open |
+| **P6** Talk and hand-over | comments on board ideas; "copy to Todo" as a confirm-first link (`todo/?add=&notes=`, no token API); mail to the Ideas admins on a new idea, sent through the portal (platform decision F8 A) | built, deploy pending (needs the platform deploy first) |
 | **Later** | own image upload; AI help | |
 
 Every phase ends with a deploy that can be tried right away.

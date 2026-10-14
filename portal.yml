@@ -9,7 +9,8 @@
 # Portal → Users, read from X-Auth-Request-Groups.
 #
 # The portal itself sets PUBLIC_URL, DATABASE_URL (database: true),
-# GATEWAY_SHARED_SECRET (gatewaySecret: true), PORTAL_URL and PORTAL_LOGOUT_URL.
+# GATEWAY_SHARED_SECRET (gatewaySecret: true), PORTAL_URL, PORTAL_LOGOUT_URL and
+# PORTAL_API_URL (mail to the admins on a new idea goes through the portal).
 name: Ideas
 description: Suggest app ideas, browse and vote
 icon: "💡"

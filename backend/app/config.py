@@ -22,6 +22,8 @@ class Settings:
     public_url: str = field(default_factory=lambda: _env("PUBLIC_URL", "http://localhost:8000").rstrip("/"))
     portal_url: str = field(default_factory=lambda: _env("PORTAL_URL").rstrip("/"))
     portal_logout_url: str = field(default_factory=lambda: _env("PORTAL_LOGOUT_URL"))
+    # Server-to-server address of portal-api (mail through the portal, portal_mail.py).
+    portal_api_url: str = field(default_factory=lambda: _env("PORTAL_API_URL").rstrip("/"))
 
     # Built React app (frontend/dist); copied to /srv/static in the image.
     static_dir: Path = field(
