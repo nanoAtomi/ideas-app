@@ -13,8 +13,10 @@ questions plus free text, everyone can browse and vote, and the admin picks what
 | Visibility | Per idea: "on the board" (default) or "only for Nico". Optional "anonymous" hides the name on the board (admins still see it) |
 | Board | All board ideas, sorted by votes or newest; one 👍 vote per person and idea; no comments in v1 |
 | Own ideas | Edit any time. Delete = soft delete: gone from the board and "My ideas", still visible to admins marked as deleted. The delete dialog says so honestly. Admins can delete permanently on request (GDPR) |
-| Admin | Own Kanban board: columns = status (new → seen → planned → built / not now), drag & drop (`dnd-kit`); a short reply to the submitter, shown in "My ideas"; hide an idea from the board |
-| Later | Comments, mail to the admin on a new idea, "copy to Todo" (needs a token API in the Todo app), own image upload |
+| Admin | Own Kanban board: columns = status (new → seen → planned → in development → built / not now), drag & drop (`dnd-kit`); a short reply to the submitter, shown in "My ideas"; hide an idea from the board |
+| Versions | Every save keeps a version (who, when, which fields). A history compares two versions side by side and can restore one. Authors edit their ideas; admins edit any idea with a required short reason ("completed", "against the rules: hate speech"), which the author sees as "edited by an admin". Rules page linked from the wizard (no racism, hate, malware, phishing, ...) |
+| Operator notebook | The owner's own ideas - for a new app or an existing one ("concerns: new app / Todo / Finance / ...") - as admin-only ideas with versions and a filter by app. A quick-capture page `/quick` with its own manifest, added to the phone's home screen (or opened from an iOS Shortcuts widget), records one in seconds |
+| Later | Own image upload; AI help in the wizard (placeholders, tips, follow-up questions) - see the platform's TODO |
 | Data | `users`, `ideas` (answers, free text, image links, visibility, anonymous, status, admin reply, hidden, deleted_at), `votes` (user, idea; unique). Personal data: display name + idea texts. Privacy page at `/privacy` (public) mentions imgur |
 | Stack | Golden path (FastAPI + React), no deviation |
 | Database / files | `database: true`; no `dataMountPath` (images live on imgur) |
@@ -31,8 +33,11 @@ questions plus free text, everyone can browse and vote, and the admin picks what
 |---|---|---|
 | **P0** Skeleton | repo from the blueprint: gateway auth, health, `/api/me` (with `is_admin`), DE/EN shell with nav, `portal.yml`, build + deploy workflows, first deploy | ✅ |
 | **P1** Submit + admin | wizard with inspiration prompts, "My ideas" with status and reply, edit, soft delete with honest hint, admin Kanban (status, reply, hide, permanent delete) | ✅ |
-| **P2** Board | Discover with visibility and anonymous, votes, sort by votes/newest, imgur links with preview, privacy page | built, deploy pending |
+| **P2** Board | Discover with visibility and anonymous, votes, sort by votes/newest, imgur links with preview, privacy page | ✅ |
 | **P3** Open to everyone (platform repo) | done by the platform's access modes (`multi-app` docs/access-and-roles.md): Ideas is "open" | ✅ |
-| **Later** | comments, admin mail on new ideas, "copy to Todo", own image upload | |
+| **P4** Wizard on iOS, "in development" | wizard shows exactly one question on the iPhone home-screen app too; Kanban column "in development" | |
+| **P5** Versions, admin edit, notebook | versions with compare/restore; admin edit with reason; rules page; "concerns" field and filter; `/quick` capture page | |
+| **P6** Talk and hand-over | comments on ideas; mail to the admin on a new idea; "copy to Todo" (needs a token API in the Todo app) | |
+| **Later** | own image upload; AI help | |
 
 Every phase ends with a deploy that can be tried right away.
