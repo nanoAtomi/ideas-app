@@ -14,13 +14,14 @@ import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalList
 import { CSS } from '@dnd-kit/utilities';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { STATUSES, useAdminActions, useAdminIdeas, type AdminIdea, type Status } from '../api/ideas';
 import { Dialog } from '../components/Dialog';
 import { EmptyState } from '../components/EmptyState';
 import { Switch } from '../components/Switch';
 import { ImageStrip } from '../components/Images';
 import { STEPS } from '../components/IdeaInputs';
-import { formatDate, STATUS_STYLE } from '../components/StatusBadge';
+import { ConcernsTag, formatDate, STATUS_STYLE } from '../components/StatusBadge';
 import { PageTitle } from './Pages';
 
 /** Kanban over all ideas: drag a card into another column to change its status. */
@@ -42,7 +43,12 @@ function AdminBoard() {
   const ideas = useAdminIdeas();
   const [showDeleted, setShowDeleted] = useState(true);
   const [openId, setOpenId] = useState<number | null>(null);
-  const visible = (ideas.data ?? []).filter((idea) => showDeleted || !idea.deleted_at);
+  // Which app the ideas are for: everything, new apps, or one existing app.
+  const [concerns, setConcerns] = useState<string | null | undefined>(undefined);
+  const apps = [...new Set((ideas.data ?? []).map((idea) => idea.concerns).filter((c): c is string => !!c))].sort((a, b) => a.localeCompare(b));
+  const visible = (ideas.data ?? []).filter(
+    (idea) => (showDeleted || !idea.deleted_at) && (concerns === undefined || idea.concerns === concerns),
+  );
   const open = ideas.data?.find((idea) => idea.id === openId) ?? null;
 
   return (
@@ -54,6 +60,27 @@ function AdminBoard() {
           <Switch checked={showDeleted} onChange={setShowDeleted} label={t('admin.showDeleted')} />
         </div>
       </div>
+      {apps.length > 0 && (
+        <div role="group" aria-label={t('admin.filterApps')} className="-mx-4 mb-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:px-0">
+          {[
+            { value: undefined, label: t('admin.allIdeas') },
+            { value: null, label: `✨ ${t('concerns.new')}` },
+            ...apps.map((name) => ({ value: name, label: `🧩 ${name}` })),
+          ].map((option) => (
+            <button
+              key={String(option.value)}
+              type="button"
+              aria-pressed={concerns === option.value}
+              onClick={() => setConcerns(option.value)}
+              className={`min-h-10 shrink-0 rounded-full border px-3.5 text-sm transition ${
+                concerns === option.value ? 'border-orange-400 bg-orange-50 font-semibold text-orange-700 dark:bg-orange-500/15 dark:text-orange-300' : 'border-line hover:border-orange-300'
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      )}
       {ideas.isPending && <p className="text-slate-500">{t('loading')}</p>}
       {ideas.isError && <p className="text-red-700 dark:text-red-400">{t('error.load', { message: ideas.error.message })}</p>}
       {ideas.data && <Board ideas={visible} onOpen={(idea) => setOpenId(idea.id)} />}
@@ -152,6 +179,11 @@ function Card({ idea, onOpen, dragging = false }: { idea: AdminIdea; onOpen?: (i
       } ${idea.deleted_at ? 'opacity-60' : ''}`}
     >
       <p className="font-semibold leading-snug">{idea.name_idea ?? t('mine.untitled')}</p>
+      {idea.concerns && (
+        <div className="mt-1.5">
+          <ConcernsTag name={idea.concerns} />
+        </div>
+      )}
       <p className="mt-1 line-clamp-2 text-slate-600 dark:text-slate-300">{idea.problem}</p>
       <div className="mt-2.5 flex flex-wrap items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
         <span className="font-medium">{idea.author.display_name}</span>
@@ -178,7 +210,11 @@ function IdeaDetail({ idea, onClose }: { idea: AdminIdea; onClose: () => void })
     t(`steps.${step}.question`),
     step === 'frequency'
       ? idea.frequency && `${t(`frequency.${idea.frequency}.icon`)} ${t(`frequency.${idea.frequency}.label`)}`
-      : idea[({ problem: 'problem', audience: 'audience', helps: 'helps', name: 'name_idea', details: 'details' } as const)[step]],
+      : step === 'concerns'
+        ? idea.concerns
+          ? `🧩 ${idea.concerns}`
+          : `✨ ${t('concerns.new')}`
+        : idea[({ problem: 'problem', audience: 'audience', helps: 'helps', name: 'name_idea', details: 'details' } as const)[step]],
   ]);
 
   return (
@@ -198,6 +234,16 @@ function IdeaDetail({ idea, onClose }: { idea: AdminIdea; onClose: () => void })
           {idea.author.email && ` · ${idea.author.email}`}
         </span>
       </div>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <Link to={`/admin/ideas/${idea.id}/edit`} className="min-h-10 rounded-full border border-line px-4 py-2 text-sm font-semibold hover:bg-ink/5 dark:hover:bg-white/10">
+          ✏️ {t('adminEdit.open')}
+        </Link>
+        <Link to={`/admin/ideas/${idea.id}/history`} className="min-h-10 rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-ink/5 dark:text-slate-300 dark:hover:bg-white/10">
+          🕘 {t('mine.history')}
+        </Link>
+      </div>
+      {idea.admin_edit_reason && <p className="mt-3 text-sm text-amber-800 dark:text-amber-200">🛡️ {idea.admin_edit_reason}</p>}
 
       <dl className="mt-5 space-y-4">
         {answers.map(([question, answer]) => (

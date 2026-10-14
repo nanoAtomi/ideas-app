@@ -31,9 +31,12 @@ const idea: Idea = {
   visibility: 'board',
   anonymous: true,
   image_links: ['https://i.imgur.com/AbC123x.png'],
+  concerns: null,
   status: 'planned',
   admin_reply: 'Love it, building it next!',
   replied_at: '2026-10-12T10:00:00Z',
+  admin_edit_reason: null,
+  admin_edited_at: null,
   created_at: '2026-10-10T10:00:00Z',
   updated_at: '2026-10-10T10:00:00Z',
 };
@@ -97,7 +100,12 @@ describe('ideas', () => {
   it('walks through the wizard: only the problem is required', async () => {
     const user = userEvent.setup();
     renderApp('/submit');
-    expect(await screen.findByRole('heading', { name: 'What problem bugs you?' })).toBeInTheDocument();
+    // First: a new app, or a wish for an existing one.
+    expect(await screen.findByRole('heading', { name: 'A new app, or one that already exists?' })).toBeInTheDocument();
+    await user.click(screen.getByRole('radio', { name: /For an existing app/ }));
+    await user.type(screen.getByRole('textbox', { name: 'Name of the app' }), 'Todo');
+    await user.click(screen.getByRole('button', { name: 'Next →' }));
+    expect(screen.getByRole('heading', { name: 'What problem bugs you?' })).toBeInTheDocument();
     // The nudge stays folded until asked for.
     await user.click(screen.getByRole('button', { name: /Stuck\? Get a nudge/ }));
     expect(screen.getByRole('button', { name: /Another/ })).toBeInTheDocument();
@@ -121,7 +129,9 @@ describe('ideas', () => {
     // Summary: every answer, each can be changed and leads back here.
     expect(screen.getByRole('heading', { name: 'All good?' })).toBeInTheDocument();
     expect(screen.getByText('Plants keep dying')).toBeInTheDocument();
+    expect(screen.getByText('🧩 Todo')).toBeInTheDocument();
     expect(screen.getAllByText('skipped')).toHaveLength(3);
+    expect(screen.getByRole('link', { name: 'Our rules' })).toHaveAttribute('href', '/rules');
     expect(screen.getByText(/On the board · 🙈 Anonymous/)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Change answer: Who has this problem?' }));
     const audience = screen.getByRole('textbox', { name: 'Who has this problem?' });
@@ -130,7 +140,7 @@ describe('ideas', () => {
     await user.click(screen.getByRole('button', { name: '✓ Back to summary' }));
     expect(screen.getByText('Plant parents')).toBeInTheDocument();
     // Earlier steps stay reachable through the step dots.
-    expect(screen.getByRole('button', { name: 'Step 1: Problem' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Step 2: Problem' })).toBeEnabled();
     await user.click(screen.getByRole('button', { name: '💡 Send idea' }));
 
     expect(await screen.findByRole('heading', { name: 'Thanks! Your idea has arrived.' })).toBeInTheDocument();
@@ -145,6 +155,7 @@ describe('ideas', () => {
       visibility: 'board',
       anonymous: true,
       image_links: [],
+      concerns: 'Todo',
     });
   });
 
@@ -205,7 +216,8 @@ describe('ideas', () => {
   it('accepts only imgur links for screenshots', async () => {
     const user = userEvent.setup();
     renderApp('/submit');
-    await user.type(await screen.findByRole('textbox', { name: 'What problem bugs you?' }), 'x');
+    await user.click(await screen.findByRole('button', { name: 'Skip' }));
+    await user.type(screen.getByRole('textbox', { name: 'What problem bugs you?' }), 'x');
     await user.click(screen.getByRole('button', { name: 'Next →' }));
     for (let i = 0; i < 4; i++) await user.click(screen.getByRole('button', { name: 'Skip' }));
     const first = screen.getByRole('textbox', { name: 'Image link 1' });
@@ -215,5 +227,62 @@ describe('ideas', () => {
     await user.clear(first);
     await user.type(first, 'https://imgur.com/AbC123x');
     expect(screen.getByRole('button', { name: 'Next →' })).toBeEnabled();
+  });
+
+  it('compares versions and brings an old one back', async () => {
+    const user = userEvent.setup();
+    const fields = { ...idea, problem: 'Old text' };
+    fetchMock.mockImplementation(async (url: string, init?: RequestInit) => {
+      if (url === '/api/me') return json(me);
+      if (url === '/api/ideas/7/versions')
+        return json([
+          { number: 2, by_admin: true, editor_name: null, reason: 'Fixed spelling', changed: ['problem'], fields: { ...fields, problem: 'New text' }, created_at: '2026-10-13T10:00:00Z' },
+          { number: 1, by_admin: false, editor_name: 'alice', reason: null, changed: [], fields, created_at: '2026-10-10T10:00:00Z' },
+        ]);
+      if (url === '/api/ideas/7/versions/1/restore' && init?.method === 'POST') return json(idea);
+      return json({ detail: 'Not found' }, 404);
+    });
+    renderApp('/mine/7/history');
+    expect(await screen.findByText(/An admin/)).toBeInTheDocument();
+    expect(screen.getByText('🛡️ Fixed spelling')).toBeInTheDocument();
+    // Only the changed field is compared: old and new side by side.
+    expect(screen.getByText('Old text')).toBeInTheDocument();
+    expect(screen.getByText('New text')).toBeInTheDocument();
+    expect(screen.queryByText('Flatmates')).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /Bring back/ }));
+    const dialog = screen.getByRole('dialog', { name: 'Bring back version 1?' });
+    await user.click(within(dialog).getByRole('button', { name: /Bring back/ }));
+    expect(fetchMock).toHaveBeenCalledWith('/api/ideas/7/versions/1/restore', expect.objectContaining({ method: 'POST' }));
+  });
+
+  it('lets an admin change an idea only with a reason', async () => {
+    const user = userEvent.setup();
+    renderApp('/admin/ideas/7/edit');
+    expect(await screen.findByRole('heading', { name: 'Edit idea (admin)' })).toBeInTheDocument();
+    const save = screen.getByRole('button', { name: /Save/ });
+    expect(save).toBeDisabled();
+    await user.click(screen.getByRole('button', { name: 'Against the rules: hate speech' }));
+    expect(save).toBeEnabled();
+    await user.click(save);
+    const put = fetchMock.mock.calls.find(([url, init]) => url === '/api/admin/ideas/7' && init?.method === 'PUT')!;
+    expect(JSON.parse(put[1].body)).toMatchObject({ problem: idea.problem, reason: 'Against the rules: hate speech' });
+  });
+
+  it('saves a quick note as a private idea for an app', async () => {
+    const user = userEvent.setup();
+    fetchMock.mockImplementation(async (url: string, init?: RequestInit) => {
+      if (url === '/api/me') return json(me);
+      if (url === '/api/ideas/concerns') return json(['Todo']);
+      if (url === '/api/ideas' && init?.method === 'POST') return json({ ...idea, id: 9 }, 201);
+      return json({ detail: 'Not found' }, 404);
+    });
+    renderApp('/quick');
+    await user.type(await screen.findByRole('textbox', { name: 'What came to mind?' }), 'Recurring tasks by weekday');
+    await user.click(await screen.findByRole('button', { name: '🧩 Todo' }));
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    const post = fetchMock.mock.calls.find(([url, init]) => url === '/api/ideas' && init?.method === 'POST')!;
+    expect(JSON.parse(post[1].body)).toMatchObject({ problem: 'Recurring tasks by weekday', concerns: 'Todo', visibility: 'private' });
+    expect(await screen.findByText('✓ Saved')).toBeInTheDocument();
   });
 });

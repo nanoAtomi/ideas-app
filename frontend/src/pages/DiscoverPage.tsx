@@ -5,7 +5,7 @@ import { useBoard, useVote, type BoardIdea, type BoardSort } from '../api/ideas'
 import { Dialog } from '../components/Dialog';
 import { EmptyState } from '../components/EmptyState';
 import { ImageStrip } from '../components/Images';
-import { formatDate, StatusBadge } from '../components/StatusBadge';
+import { ConcernsTag, formatDate, StatusBadge } from '../components/StatusBadge';
 
 /** The idea board: everything people put "on the board", to browse and vote on. */
 export function DiscoverPage() {
@@ -87,6 +87,11 @@ function BoardCard({ idea, onOpen }: { idea: BoardIdea; onOpen: () => void }) {
         </h3>
         {idea.status !== 'new' && <StatusBadge status={idea.status} />}
       </div>
+      {idea.concerns && (
+        <div className="mt-2">
+          <ConcernsTag name={idea.concerns} />
+        </div>
+      )}
       <p className="mt-1.5 line-clamp-3 whitespace-pre-line text-slate-600 dark:text-slate-300">{idea.problem}</p>
       <ImageStrip links={idea.image_links} size="sm" />
       <div className="mt-auto flex items-center gap-2 pt-4 text-xs text-slate-500 dark:text-slate-400">
@@ -144,6 +149,7 @@ function IdeaDialog({ idea, onClose }: { idea: BoardIdea; onClose: () => void })
     <Dialog title={idea.name_idea ?? t('mine.untitled')} onClose={onClose} wide>
       <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
         {idea.status !== 'new' && <StatusBadge status={idea.status} />}
+        {idea.concerns && <ConcernsTag name={idea.concerns} />}
         <span>{idea.author_name ?? `🙈 ${t('visibility.anonymous.short')}`}</span>
         <span>· {formatDate(idea.created_at, i18n.language)}</span>
         <span className="ml-auto">

@@ -1,15 +1,16 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FREQUENCIES, type Frequency, type IdeaFields, type Visibility } from '../api/ideas';
+import { FREQUENCIES, useConcerns, type Frequency, type IdeaFields, type Visibility } from '../api/ideas';
 import { ImageLinksInput } from './Images';
 import { Switch } from './Switch';
 
 // One input per wizard question. The wizard shows them one at a time; the edit page
 // shows all of them on one page.
 
-export const STEPS = ['problem', 'audience', 'frequency', 'helps', 'name', 'details', 'visibility'] as const;
+export const STEPS = ['concerns', 'problem', 'audience', 'frequency', 'helps', 'name', 'details', 'visibility'] as const;
 export type Step = (typeof STEPS)[number];
 
-export const LIMITS = { problem: 2000, audience: 300, helps: 2000, name_idea: 120, details: 10000 };
+export const LIMITS = { problem: 2000, audience: 300, helps: 2000, name_idea: 120, details: 10000, concerns: 60 };
 
 const field =
   'w-full rounded-2xl border border-line bg-canvas px-4 py-3 outline-none transition placeholder:text-slate-400 focus:border-orange-400 focus:ring-4 focus:ring-orange-400/20';
@@ -27,6 +28,8 @@ export function StepInput({ step, value, onChange, autoFocus }: InputProps & { s
   const { t } = useTranslation();
   const label = t(`steps.${step}.question`);
   switch (step) {
+    case 'concerns':
+      return <ConcernsInput value={value} onChange={onChange} autoFocus={autoFocus} />;
     case 'problem':
       return (
         <textarea
@@ -127,6 +130,57 @@ export function StepInput({ step, value, onChange, autoFocus }: InputProps & { s
     case 'visibility':
       return <VisibilityInput value={value} onChange={onChange} />;
   }
+}
+
+/** A new app, or an existing one - by name, with the names others already used as chips. */
+function ConcernsInput({ value, onChange, autoFocus }: InputProps) {
+  const { t } = useTranslation();
+  const known = useConcerns().data ?? [];
+  // "Existing app" stays chosen while the name is still empty.
+  const [existing, setExisting] = useState(value.concerns !== null);
+  const chip = (active: boolean) =>
+    `rounded-full border px-3.5 py-2 text-sm transition ${
+      active ? 'border-orange-400 bg-orange-50 text-orange-700 dark:bg-orange-500/15 dark:text-orange-300' : 'border-line hover:border-orange-300'
+    }`;
+  return (
+    <div>
+      <div role="radiogroup" aria-label={t('steps.concerns.question')} className="grid gap-3 sm:grid-cols-2">
+        <ChoiceCard
+          checked={!existing}
+          onSelect={() => {
+            setExisting(false);
+            onChange({ concerns: null });
+          }}
+          icon="✨"
+          title={t('concerns.new')}
+          text={t('concerns.newText')}
+        />
+        <ChoiceCard checked={existing} onSelect={() => setExisting(true)} icon="🧩" title={t('concerns.existing')} text={t('concerns.existingText')} />
+      </div>
+      {existing && (
+        <div className="mt-4">
+          <input
+            aria-label={t('concerns.appName')}
+            autoFocus={autoFocus}
+            maxLength={LIMITS.concerns}
+            value={value.concerns ?? ''}
+            onChange={(e) => onChange({ concerns: orNull(e.target.value) })}
+            placeholder={t('concerns.placeholder')}
+            className={field}
+          />
+          {known.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {known.map((name) => (
+                <button key={name} type="button" onClick={() => onChange({ concerns: name })} aria-pressed={value.concerns === name} className={chip(value.concerns === name)}>
+                  {name}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
 }
 
 function VisibilityInput({ value, onChange }: InputProps) {

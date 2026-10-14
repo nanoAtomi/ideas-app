@@ -8,6 +8,13 @@
     <title>Ideas</title>
     <!-- Appearance before the first paint (no white flash in dark mode). -->
     <script src="/theme-init.js"></script>
+    <!-- Home screen: the app, or (on /quick) the quick-capture page - QuickPage swaps these. -->
+    <!-- use-credentials: the manifest sits behind the platform login like everything else -->
+    <link rel="manifest" href="/manifest.webmanifest" crossorigin="use-credentials" />
+    <link rel="apple-touch-icon" href="/icons/icon-180.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Ideas" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body class="antialiased">

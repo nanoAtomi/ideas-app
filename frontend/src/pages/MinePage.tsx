@@ -5,7 +5,7 @@ import { useIdeaActions, useMyIdeas, type Idea } from '../api/ideas';
 import { Dialog } from '../components/Dialog';
 import { EmptyState } from '../components/EmptyState';
 import { ImageStrip } from '../components/Images';
-import { formatDate, StatusBadge } from '../components/StatusBadge';
+import { ConcernsTag, formatDate, StatusBadge } from '../components/StatusBadge';
 import { PageTitle } from './Pages';
 
 /** The author's own ideas with status, visibility and the admin's reply. */
@@ -47,6 +47,7 @@ function IdeaCard({ idea, onDelete }: { idea: Idea; onDelete: () => void }) {
         <span className="rounded-full bg-ink/5 px-2.5 py-1 text-xs text-slate-600 dark:bg-white/10 dark:text-slate-300">
           {t(`visibility.${idea.visibility}.icon`)} {t(`visibility.${idea.visibility}.short`)}
         </span>
+        {idea.concerns && <ConcernsTag name={idea.concerns} />}
         {idea.visibility === 'board' && idea.anonymous && (
           <span className="rounded-full bg-ink/5 px-2.5 py-1 text-xs text-slate-600 dark:bg-white/10 dark:text-slate-300">🙈 {t('visibility.anonymous.short')}</span>
         )}
@@ -58,6 +59,15 @@ function IdeaCard({ idea, onDelete }: { idea: Idea; onDelete: () => void }) {
       <p className="mt-1 line-clamp-3 whitespace-pre-line text-slate-600 dark:text-slate-300">{idea.problem}</p>
       <ImageStrip links={idea.image_links} size="sm" />
 
+      {idea.admin_edit_reason && (
+        <p className="mt-4 rounded-2xl bg-amber-50 p-3.5 text-sm text-amber-900 dark:bg-amber-500/10 dark:text-amber-100">
+          🛡️ <span className="font-semibold">{t('mine.adminEdited')}</span> {idea.admin_edit_reason}{' '}
+          <Link to={`/mine/${idea.id}/history`} className="font-semibold underline">
+            {t('mine.seeChanges')}
+          </Link>
+        </p>
+      )}
+
       {idea.admin_reply && (
         <div className="mt-4 rounded-2xl rounded-tl-md bg-gradient-to-br from-amber-50 to-orange-50 p-4 text-sm dark:from-amber-500/10 dark:to-orange-500/10">
           <p className="font-semibold text-orange-800 dark:text-orange-300">💬 {t('mine.reply')}</p>
@@ -68,6 +78,9 @@ function IdeaCard({ idea, onDelete }: { idea: Idea; onDelete: () => void }) {
       <div className="mt-auto flex gap-2 pt-4">
         <Link to={`/mine/${idea.id}/edit`} className="rounded-full border border-line px-4 py-2 text-sm font-semibold hover:bg-ink/5 dark:hover:bg-white/10">
           ✏️ {t('mine.edit')}
+        </Link>
+        <Link to={`/mine/${idea.id}/history`} className="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-ink/5 dark:text-slate-300 dark:hover:bg-white/10">
+          🕘 {t('mine.history')}
         </Link>
         <button onClick={onDelete} className="rounded-full px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10">
           {t('mine.delete')}

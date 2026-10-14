@@ -69,6 +69,15 @@
     "backToReview": "Back to summary"
   },
   "steps": {
+    "concerns": {
+      "question": "A new app, or one that already exists?",
+      "hint": "Wishes for existing apps are welcome too.",
+      "nudges": [
+        "What's missing in an app you already use?",
+        "Is there an app that almost fits - but only almost?"
+      ],
+      "short": "App"
+    },
     "problem": {
       "question": "What problem bugs you?",
       "hint": "One or two sentences are enough. No tech speak needed.",
@@ -208,7 +217,10 @@
     "delete": "Delete",
     "deleteTitle": "Delete idea?",
     "deleteText": "The idea disappears for everyone – from the board and from your list. Nico can still see it, though. If it should be gone completely, tell Nico via Feedback.",
-    "deleteConfirm": "Yes, delete"
+    "deleteConfirm": "Yes, delete",
+    "adminEdited": "An admin changed it:",
+    "seeChanges": "See changes",
+    "history": "History"
   },
   "edit": {
     "title": "Edit idea",
@@ -235,7 +247,9 @@
     "repliedOn": "Replied on {{date}}",
     "purge": "Delete for good",
     "purgeText": "The idea is deleted completely – for you too. This can't be undone.",
-    "purgeConfirm": "Delete for good"
+    "purgeConfirm": "Delete for good",
+    "filterApps": "Filter by app",
+    "allIdeas": "All"
   },
   "error": {
     "notSignedIn": "You're not signed in. Reload the page to sign in.",
@@ -251,5 +265,108 @@
   },
   "footer": {
     "privacy": "Privacy"
+  },
+  "concerns": {
+    "new": "New app",
+    "newText": "Something that doesn't exist yet.",
+    "existing": "For an existing app",
+    "existingText": "A wish or an improvement.",
+    "appName": "Name of the app",
+    "placeholder": "e.g. Todo"
+  },
+  "history": {
+    "title": "History",
+    "lead": "Every saved version - compare them and bring an earlier one back.",
+    "admin": "admin",
+    "anAdmin": "An admin",
+    "author": "Author",
+    "created": "Submitted",
+    "current": "Current",
+    "restore": "Bring back",
+    "compare": "Compare",
+    "older": "Older version",
+    "newer": "Newer version",
+    "same": "The two versions are the same.",
+    "onlyChanges": "Show only changes",
+    "allFields": "Show all fields",
+    "yes": "Yes",
+    "no": "No",
+    "restoreTitle": "Bring back version {{n}}?",
+    "restoreText": "The idea gets this state again. It is saved as a new version - nothing is lost.",
+    "restoredReason": "Restored version {{n}}",
+    "fields": {
+      "concerns": "Which app",
+      "name_idea": "Name",
+      "problem": "Problem",
+      "audience": "Who has it",
+      "frequency": "How often",
+      "helps": "How an app helps",
+      "details": "More",
+      "image_links": "Images",
+      "visibility": "Visibility",
+      "anonymous": "Anonymous"
+    }
+  },
+  "adminEdit": {
+    "open": "Edit",
+    "title": "Edit idea (admin)",
+    "lead": "The author sees that an admin changed it, and why.",
+    "reason": "Why are you changing the idea?",
+    "reasonHint": "Required - the author sees this sentence.",
+    "reasons": [
+      "Added what was missing",
+      "Described more clearly",
+      "Fixed spelling",
+      "Against the rules: hate speech",
+      "Against the rules: ads or spam",
+      "Against the rules: malware or phishing",
+      "Removed personal data"
+    ]
+  },
+  "rules": {
+    "title": "Rules",
+    "lead": "So the idea board stays a good place.",
+    "link": "Our rules",
+    "beforeSend": "Before you send:",
+    "admins": "Admins may complete ideas, reword them or remove parts that break these rules. You then see what changed and why - in your idea's history.",
+    "items": [
+      {
+        "icon": "🤝",
+        "title": "Respect",
+        "text": "No racism, no hate, no incitement and no insults - against anyone."
+      },
+      {
+        "icon": "🛡️",
+        "title": "Nothing harmful",
+        "text": "No ideas for malware, phishing, fraud, spying on others or anything else illegal."
+      },
+      {
+        "icon": "🔒",
+        "title": "No one else's data",
+        "text": "No names, addresses, numbers or photos of other people without their okay."
+      },
+      {
+        "icon": "📣",
+        "title": "No ads",
+        "text": "No spam, no links to shops or your own offers."
+      },
+      {
+        "icon": "💡",
+        "title": "One idea per entry",
+        "text": "Several ideas? Better several entries - so people can vote for each."
+      }
+    ]
+  },
+  "quick": {
+    "menu": "Jot down an idea",
+    "title": "What came to mind?",
+    "placeholder": "Jot it down - you can work it out later.",
+    "for": "For",
+    "otherApp": "Other app",
+    "save": "Save",
+    "saved_one": "Saved",
+    "saved_other": "{{count}} saved",
+    "privateHint": "Only admins see these notes",
+    "adminsOnly": "The quick note is the admins' notebook. Submit your idea here:"
   }
 }

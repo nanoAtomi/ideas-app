@@ -1,13 +1,16 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, NavLink, Route, Routes } from 'react-router-dom';
+import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { ApiError } from './api/client';
 import { useMe } from './api/me';
 import { BottomNav } from './components/BottomNav';
 import { menuItemClass, PlatformBar } from './components/PlatformBar';
 import { EditPage } from './pages/EditPage';
+import { HistoryPage } from './pages/HistoryPage';
 import { MinePage } from './pages/MinePage';
 import { DiscoverPage } from './pages/DiscoverPage';
+import { QuickPage } from './pages/QuickPage';
+import { RulesPage } from './pages/RulesPage';
 import { SubmitPage } from './pages/SubmitPage';
 
 const navLink = ({ isActive }: { isActive: boolean }) =>
@@ -20,6 +23,8 @@ const AdminPage = lazy(() => import('./pages/AdminPage').then((m) => ({ default:
 export function App() {
   const { t, i18n } = useTranslation();
   const me = useMe();
+  // The quick-capture page is a tool of its own: no bottom nav, no footer.
+  const quick = useLocation().pathname === '/quick';
 
   useEffect(() => {
     document.documentElement.lang = i18n.resolvedLanguage ?? 'en';
@@ -76,9 +81,14 @@ export function App() {
         }
         menuItems={
           me.data.is_admin && (
-            <Link to="/admin" className={`${menuItemClass} sm:hidden`}>
-              🗂️ {t('nav.admin')}
-            </Link>
+            <>
+              <Link to="/quick" className={menuItemClass}>
+                ✍️ {t('quick.menu')}
+              </Link>
+              <Link to="/admin" className={`${menuItemClass} sm:hidden`}>
+                🗂️ {t('nav.admin')}
+              </Link>
+            </>
           )
         }
         actions={
@@ -96,6 +106,11 @@ export function App() {
           <Route path="/submit" element={<SubmitPage />} />
           <Route path="/mine" element={<MinePage />} />
           <Route path="/mine/:ideaId/edit" element={<EditPage />} />
+          <Route path="/mine/:ideaId/history" element={<HistoryPage />} />
+          <Route path="/admin/ideas/:ideaId/edit" element={me.data.is_admin ? <EditPage admin /> : <DiscoverPage />} />
+          <Route path="/admin/ideas/:ideaId/history" element={me.data.is_admin ? <HistoryPage admin /> : <DiscoverPage />} />
+          <Route path="/rules" element={<RulesPage />} />
+          <Route path="/quick" element={<QuickPage isAdmin={me.data.is_admin} />} />
           <Route
             path="/admin"
             element={
@@ -106,13 +121,18 @@ export function App() {
           />
           <Route path="*" element={<DiscoverPage />} />
         </Routes>
-        <footer className="mt-12 text-center text-xs text-slate-400">
-          <a href="/privacy/" className="hover:text-ink">
-            {t('footer.privacy')}
-          </a>
-        </footer>
+        {!quick && (
+          <footer className="mt-12 flex justify-center gap-4 text-xs text-slate-400">
+            <Link to="/rules" className="hover:text-ink">
+              {t('rules.title')}
+            </Link>
+            <a href="/privacy/" className="hover:text-ink">
+              {t('footer.privacy')}
+            </a>
+          </footer>
+        )}
       </main>
-      <BottomNav />
+      {!quick && <BottomNav />}
     </>
   );
 }

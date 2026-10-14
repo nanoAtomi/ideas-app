@@ -69,6 +69,15 @@
     "backToReview": "Zur Übersicht"
   },
   "steps": {
+    "concerns": {
+      "question": "Neue App oder eine, die es schon gibt?",
+      "hint": "Auch Wünsche für bestehende Apps sind willkommen.",
+      "nudges": [
+        "Was fehlt dir in einer App, die du schon nutzt?",
+        "Gibt es eine App, die fast passt - aber eben nur fast?"
+      ],
+      "short": "App"
+    },
     "problem": {
       "question": "Welches Problem nervt dich?",
       "hint": "Ein, zwei Sätze reichen. Ganz ohne Technik-Sprech.",
@@ -208,7 +217,10 @@
     "delete": "Löschen",
     "deleteTitle": "Idee löschen?",
     "deleteText": "Die Idee verschwindet für alle – vom Board und aus deiner Liste. Nico kann sie aber weiterhin sehen. Soll sie ganz weg, schreib Nico über Feedback.",
-    "deleteConfirm": "Ja, löschen"
+    "deleteConfirm": "Ja, löschen",
+    "adminEdited": "Ein Admin hat geändert:",
+    "seeChanges": "Änderungen ansehen",
+    "history": "Verlauf"
   },
   "edit": {
     "title": "Idee bearbeiten",
@@ -235,7 +247,9 @@
     "repliedOn": "Geantwortet am {{date}}",
     "purge": "Endgültig löschen",
     "purgeText": "Die Idee wird komplett gelöscht – auch für dich. Das lässt sich nicht rückgängig machen.",
-    "purgeConfirm": "Endgültig löschen"
+    "purgeConfirm": "Endgültig löschen",
+    "filterApps": "Nach App filtern",
+    "allIdeas": "Alle"
   },
   "error": {
     "notSignedIn": "Du bist nicht angemeldet. Lade die Seite neu, um dich anzumelden.",
@@ -251,5 +265,108 @@
   },
   "footer": {
     "privacy": "Datenschutz"
+  },
+  "concerns": {
+    "new": "Neue App",
+    "newText": "Etwas, das es noch nicht gibt.",
+    "existing": "Für eine bestehende App",
+    "existingText": "Ein Wunsch oder eine Verbesserung.",
+    "appName": "Name der App",
+    "placeholder": "z. B. Todo"
+  },
+  "history": {
+    "title": "Verlauf",
+    "lead": "Jede gespeicherte Fassung - vergleichen und eine frühere zurückholen.",
+    "admin": "Admin",
+    "anAdmin": "Ein Admin",
+    "author": "Autor",
+    "created": "Eingereicht",
+    "current": "Aktuell",
+    "restore": "Zurückholen",
+    "compare": "Vergleichen",
+    "older": "Ältere Fassung",
+    "newer": "Neuere Fassung",
+    "same": "Die beiden Fassungen sind gleich.",
+    "onlyChanges": "Nur Änderungen zeigen",
+    "allFields": "Alle Felder zeigen",
+    "yes": "Ja",
+    "no": "Nein",
+    "restoreTitle": "Fassung {{n}} zurückholen?",
+    "restoreText": "Die Idee bekommt wieder diesen Stand. Das wird als neue Fassung gespeichert - nichts geht verloren.",
+    "restoredReason": "Fassung {{n}} wiederhergestellt",
+    "fields": {
+      "concerns": "Für welche App",
+      "name_idea": "Name",
+      "problem": "Problem",
+      "audience": "Wer hat es",
+      "frequency": "Wie oft",
+      "helps": "Wie eine App hilft",
+      "details": "Mehr",
+      "image_links": "Bilder",
+      "visibility": "Sichtbarkeit",
+      "anonymous": "Anonym"
+    }
+  },
+  "adminEdit": {
+    "open": "Bearbeiten",
+    "title": "Idee bearbeiten (Admin)",
+    "lead": "Der Autor sieht, dass ein Admin geändert hat, und warum.",
+    "reason": "Warum änderst du die Idee?",
+    "reasonHint": "Pflicht - der Autor sieht diesen Satz.",
+    "reasons": [
+      "Ergänzt, was gefehlt hat",
+      "Verständlicher beschrieben",
+      "Rechtschreibung korrigiert",
+      "Gegen die Regeln: Hass oder Hetze",
+      "Gegen die Regeln: Werbung oder Spam",
+      "Gegen die Regeln: Schadsoftware oder Phishing",
+      "Persönliche Daten entfernt"
+    ]
+  },
+  "rules": {
+    "title": "Regeln",
+    "lead": "Damit das Ideen-Board ein guter Ort bleibt.",
+    "link": "Unsere Regeln",
+    "beforeSend": "Bevor du sendest:",
+    "admins": "Admins dürfen Ideen ergänzen, umformulieren oder Teile entfernen, die gegen diese Regeln verstoßen. Du siehst dann, was geändert wurde und warum - im Verlauf deiner Idee.",
+    "items": [
+      {
+        "icon": "🤝",
+        "title": "Respekt",
+        "text": "Kein Rassismus, kein Hass, keine Hetze und keine Beleidigungen - gegen niemanden."
+      },
+      {
+        "icon": "🛡️",
+        "title": "Nichts Schädliches",
+        "text": "Keine Ideen für Schadsoftware, Phishing, Betrug, Überwachung anderer oder andere illegale Dinge."
+      },
+      {
+        "icon": "🔒",
+        "title": "Keine fremden Daten",
+        "text": "Keine Namen, Adressen, Nummern oder Fotos von anderen Leuten ohne deren Okay."
+      },
+      {
+        "icon": "📣",
+        "title": "Keine Werbung",
+        "text": "Kein Spam, keine Links zu Shops oder eigenen Angeboten."
+      },
+      {
+        "icon": "💡",
+        "title": "Eine Idee pro Eintrag",
+        "text": "Mehrere Ideen? Dann lieber mehrere Einträge - so kann man gezielt abstimmen."
+      }
+    ]
+  },
+  "quick": {
+    "menu": "Idee notieren",
+    "title": "Was ist dir eingefallen?",
+    "placeholder": "Kurz festhalten - ausformulieren kannst du später.",
+    "for": "Für",
+    "otherApp": "Andere App",
+    "save": "Speichern",
+    "saved_one": "Gespeichert",
+    "saved_other": "{{count}} gespeichert",
+    "privateHint": "Nur Admins sehen diese Notizen",
+    "adminsOnly": "Die Schnellnotiz ist das Notizbuch der Admins. Deine Idee reichst du hier ein:"
   }
 }

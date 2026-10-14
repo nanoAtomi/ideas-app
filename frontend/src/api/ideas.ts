@@ -19,6 +19,8 @@ export interface IdeaFields {
   anonymous: boolean;
   /** Direct imgur image URLs (the server normalizes what the user pasted). */
   image_links: string[];
+  /** The app it is for; null = a new app. */
+  concerns: string | null;
 }
 
 export interface Idea extends IdeaFields {
@@ -26,8 +28,23 @@ export interface Idea extends IdeaFields {
   status: Status;
   admin_reply: string | null;
   replied_at: string | null;
+  /** An admin changed the texts; shown to the author until they edit again. */
+  admin_edit_reason: string | null;
+  admin_edited_at: string | null;
   created_at: string;
   updated_at: string;
+}
+
+/** A saved state of an idea's texts (newest first in lists). */
+export interface IdeaVersion {
+  number: number;
+  by_admin: boolean;
+  /** Who saved it; for the author an admin's change has no name. */
+  editor_name: string | null;
+  reason: string | null;
+  changed: (keyof IdeaFields)[];
+  fields: IdeaFields;
+  created_at: string;
 }
 
 export interface AdminIdea extends Idea {
@@ -49,14 +66,15 @@ export const EMPTY_IDEA: IdeaFields = {
   visibility: 'board',
   anonymous: false,
   image_links: [],
+  concerns: null,
 };
 
 export function useMyIdeas() {
   return useQuery({ queryKey: ['ideas', 'mine'], queryFn: () => api<Idea[]>('/api/ideas/mine') });
 }
 
-export function useIdea(id: number) {
-  return useQuery({ queryKey: ['ideas', id], queryFn: () => api<Idea>(`/api/ideas/${id}`) });
+export function useIdea(id: number, enabled = true) {
+  return useQuery({ queryKey: ['ideas', id], queryFn: () => api<Idea>(`/api/ideas/${id}`), enabled });
 }
 
 export function useIdeaActions() {
@@ -78,8 +96,33 @@ export function useIdeaActions() {
   };
 }
 
-export function useAdminIdeas() {
-  return useQuery({ queryKey: ['admin', 'ideas'], queryFn: () => api<AdminIdea[]>('/api/admin/ideas') });
+/** App names ideas were written for - choices in the wizard. */
+export function useConcerns() {
+  return useQuery({ queryKey: ['ideas', 'concerns'], queryFn: () => api<string[]>('/api/ideas/concerns'), staleTime: 60_000 });
+}
+
+/** The history of an idea: the author's own, or (admin) any idea's. */
+export function useVersions(id: number, admin: boolean) {
+  const base = admin ? `/api/admin/ideas/${id}` : `/api/ideas/${id}`;
+  return useQuery({ queryKey: ['versions', admin, id], queryFn: () => api<IdeaVersion[]>(`${base}/versions`) });
+}
+
+export function useRestore(id: number, admin: boolean) {
+  const queryClient = useQueryClient();
+  const base = admin ? `/api/admin/ideas/${id}` : `/api/ideas/${id}`;
+  return useMutation({
+    mutationFn: ({ number, reason }: { number: number; reason?: string }) =>
+      api<Idea>(`${base}/versions/${number}/restore`, { method: 'POST', body: admin ? { reason } : {} }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['versions'] });
+      void queryClient.invalidateQueries({ queryKey: ['ideas'] });
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'ideas'] });
+    },
+  });
+}
+
+export function useAdminIdeas(enabled = true) {
+  return useQuery({ queryKey: ['admin', 'ideas'], queryFn: () => api<AdminIdea[]>('/api/admin/ideas'), enabled });
 }
 
 export function useAdminActions() {
@@ -96,6 +139,15 @@ export function useAdminActions() {
       onSuccess: (saved) => queryClient.setQueryData<AdminIdea[]>(key, (ideas) => ideas?.map((idea) => (idea.id === saved.id ? saved : idea))),
       onError: () => void queryClient.invalidateQueries({ queryKey: key }),
     }),
+    /** Changes the texts; the reason is shown to the author. */
+    edit: useMutation({
+      mutationFn: ({ id, ...body }: IdeaFields & { id: number; reason: string }) =>
+        api<AdminIdea>(`/api/admin/ideas/${id}`, { method: 'PUT', body }),
+      onSuccess: () => {
+        void queryClient.invalidateQueries({ queryKey: key });
+        void queryClient.invalidateQueries({ queryKey: ['versions'] });
+      },
+    }),
     purge: useMutation({
       mutationFn: (id: number) => api<null>(`/api/admin/ideas/${id}`, { method: 'DELETE' }),
       onSuccess: () => void queryClient.invalidateQueries({ queryKey: key }),
@@ -105,8 +157,8 @@ export function useAdminActions() {
 
 /** Just the editable answers of an idea (what PUT /api/ideas/{id} takes). */
 export function ideaFields(idea: IdeaFields): IdeaFields {
-  const { problem, audience, frequency, helps, name_idea, details, visibility, anonymous, image_links } = idea;
-  return { problem, audience, frequency, helps, name_idea, details, visibility, anonymous, image_links };
+  const { problem, audience, frequency, helps, name_idea, details, visibility, anonymous, image_links, concerns } = idea;
+  return { problem, audience, frequency, helps, name_idea, details, visibility, anonymous, image_links, concerns };
 }
 
 /** An idea as everyone sees it on the board. */

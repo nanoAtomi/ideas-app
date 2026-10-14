@@ -1,5 +1,6 @@
 """Ideas - API and the built frontend in one process (see the nicasso app blueprint)."""
 import logging
+import mimetypes
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -13,6 +14,8 @@ from .config import settings
 from .db import run_migrations
 
 log = logging.getLogger(__name__)
+# Python 3.12 doesn't know it; with nosniff a wrong type could make browsers ignore it.
+mimetypes.add_type("application/manifest+json", ".webmanifest")
 MUTATING = {"POST", "PUT", "PATCH", "DELETE"}
 CSRF_HEADER_VALUE = "ideas"
 

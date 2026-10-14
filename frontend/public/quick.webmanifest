@@ -1,0 +1,15 @@
+{
+  "id": "/quick",
+  "name": "Idee notieren",
+  "short_name": "Idee +",
+  "start_url": "/quick",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#f97316",
+  "icons": [
+    { "src": "/icons/quick-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/quick-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/quick-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

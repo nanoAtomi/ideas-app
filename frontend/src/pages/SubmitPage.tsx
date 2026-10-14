@@ -237,6 +237,8 @@ function Review({ draft, sending, failed, onEdit, onSend }: { draft: IdeaFields;
   const { t } = useTranslation();
   const answer = (step: Step): string | null => {
     switch (step) {
+      case 'concerns':
+        return draft.concerns ? `🧩 ${draft.concerns}` : `✨ ${t('concerns.new')}`;
       case 'problem':
         return draft.problem.trim() || null;
       case 'audience':
@@ -285,6 +287,12 @@ function Review({ draft, sending, failed, onEdit, onSend }: { draft: IdeaFields;
         })}
       </dl>
 
+      <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
+        📜 {t('rules.beforeSend')}{' '}
+        <Link to="/rules" className="font-semibold text-orange-700 hover:underline dark:text-orange-300">
+          {t('rules.link')}
+        </Link>
+      </p>
       {failed && (
         <p role="alert" className="mt-4 text-sm text-red-700 dark:text-red-400">
           {t('wizard.sendFailed')}

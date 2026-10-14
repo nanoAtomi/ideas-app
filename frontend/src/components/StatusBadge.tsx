@@ -10,6 +10,11 @@ export const STATUS_STYLE: Record<Status, { icon: string; badge: string; dot: st
   not_now: { icon: '💤', badge: 'bg-slate-200 text-slate-700 dark:bg-slate-500/20 dark:text-slate-300', dot: 'bg-slate-400' },
 };
 
+/** Which existing app an idea is for (none = a new app, no tag). */
+export function ConcernsTag({ name }: { name: string }) {
+  return <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300">🧩 {name}</span>;
+}
+
 export function StatusBadge({ status }: { status: Status }) {
   const { t } = useTranslation();
   const style = STATUS_STYLE[status];
