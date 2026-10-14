@@ -16,8 +16,8 @@ def test_admin_is_the_portal_role(client):
 
 def test_update_preferences(client):
     headers = as_user("bob", "bob@example.com")
-    me = client.patch("/api/me", json={"language": "de", "display_name": " Bob "}, headers=headers).json()
-    assert (me["language"], me["display_name"]) == ("de", "Bob")
+    me = client.patch("/api/me", json={"language": "de"}, headers=headers).json()
+    assert me["language"] == "de"
 
     # Empty language = follow the browser again.
     assert client.patch("/api/me", json={"language": ""}, headers=headers).json()["language"] is None
@@ -26,5 +26,10 @@ def test_update_preferences(client):
 def test_rejects_invalid_preferences(client):
     headers = as_user("bob")
     assert client.patch("/api/me", json={"language": "fr"}, headers=headers).status_code == 422
-    assert client.patch("/api/me", json={"display_name": ""}, headers=headers).status_code == 422
-    assert client.patch("/api/me", json={"display_name": "   "}, headers=headers).status_code == 422
+
+
+def test_name_follows_the_portal_profile(client):
+    headers = as_user("alice-id", "alice@example.com")
+    assert client.get("/api/me", headers=headers).json()["display_name"] == "alice"
+    headers["X-Auth-Request-Name"] = "J%C3%B6rg%20Gro%C3%9F"
+    assert client.get("/api/me", headers=headers).json()["display_name"] == "Jörg Groß"

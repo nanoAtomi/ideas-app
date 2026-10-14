@@ -1,6 +1,6 @@
 """The signed-in user, their preferences and the platform links."""
 from fastapi import APIRouter, Depends, HTTPException, Request
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from ..auth import current_user, has_role
@@ -27,7 +27,7 @@ class MeResponse(BaseModel):
 
 
 class MeUpdate(BaseModel):
-    display_name: str | None = Field(default=None, min_length=1, max_length=255)
+    # The name comes from the portal profile (X-Auth-Request-Name), not from here.
     # Empty string = follow the browser language again.
     language: str | None = None
 
@@ -57,11 +57,6 @@ def get_me(request: Request, user: User = Depends(current_user)) -> MeResponse:
 def update_me(
     request: Request, body: MeUpdate, user: User = Depends(current_user), db: Session = Depends(get_db)
 ) -> MeResponse:
-    if body.display_name is not None:
-        name = body.display_name.strip()
-        if not name:
-            raise HTTPException(status_code=422, detail="display_name must not be blank")
-        user.display_name = name
     if body.language is not None:
         if body.language not in (*LANGUAGES, ""):
             raise HTTPException(status_code=422, detail=f"language must be one of {', '.join(LANGUAGES)}")
