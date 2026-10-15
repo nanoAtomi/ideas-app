@@ -9,6 +9,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from . import platform_data
 from .api import admin, board, ideas, me
 from .config import settings
 from .db import run_migrations
@@ -35,7 +36,8 @@ app = FastAPI(title="Ideas", lifespan=lifespan, docs_url="/api/docs", openapi_ur
 async def guard(request: Request, call_next):
     """CSRF protection for the JSON API plus security and cache headers."""
     path = request.url.path
-    if path.startswith("/api/") and request.method in MUTATING:
+    # /api/platform/* is called by the portal, not a browser (secret-checked, no cookies).
+    if path.startswith("/api/") and not path.startswith("/api/platform/") and request.method in MUTATING:
         # A custom header can't be sent cross-site without a CORS preflight, which this
         # app never allows - so its presence proves a same-origin request.
         if request.headers.get("x-requested-with") != CSRF_HEADER_VALUE:
@@ -70,6 +72,7 @@ app.include_router(me.router)
 app.include_router(ideas.router)
 app.include_router(board.router)
 app.include_router(admin.router)
+app.include_router(platform_data.router)  # export + delete for the portal
 
 
 @app.api_route("/api/{path:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE"], include_in_schema=False)
