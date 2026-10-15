@@ -4,7 +4,8 @@ import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { ApiError } from './api/client';
 import { useMe } from './api/me';
 import { BottomNav } from './components/BottomNav';
-import { menuItemClass, PlatformBar } from './components/PlatformBar';
+import { Icon } from './components/AccountMenu';
+import { menuIconClass, menuItemClass, PlatformBar } from './components/PlatformBar';
 import { EditPage } from './pages/EditPage';
 import { HistoryPage } from './pages/HistoryPage';
 import { MinePage } from './pages/MinePage';
@@ -88,7 +89,8 @@ export function App() {
           me.data.is_admin && (
             <>
               <Link to="/quick" className={menuItemClass}>
-                ✍️ {t('quick.menu')}
+                <Icon name="pen" className={menuIconClass} />
+                {t('quick.menu')}
               </Link>
             </>
           )

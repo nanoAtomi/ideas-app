@@ -77,9 +77,9 @@ describe('App', () => {
     renderApp('/mine');
     expect(await screen.findByRole('heading', { name: 'My ideas' })).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Account menu' }));
-    const language = screen.getByRole('combobox', { name: 'Language' });
-    expect(language).toHaveValue('en');
-    await userEvent.selectOptions(language, 'de');
+    await userEvent.click(screen.getByRole('button', { name: 'Language' }));
+    expect(screen.getByRole('option', { name: 'English' })).toHaveAttribute('aria-selected', 'true');
+    await userEvent.click(screen.getByRole('option', { name: 'Deutsch' }));
     expect(await screen.findByRole('heading', { name: 'Meine Ideen' })).toBeInTheDocument();
     expect(document.cookie).toContain('nicasso-lang=de');
 
