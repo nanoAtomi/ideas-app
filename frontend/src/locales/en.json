@@ -20,13 +20,12 @@
     "portalTitle": "Back to the app portal",
     "menu": "Account menu",
     "language": "Language",
-    "theme": "Appearance",
-    "themeSystem": "System",
-    "themeLight": "Light",
-    "themeDark": "Dark",
     "profile": "Edit profile",
     "feedback": "Feedback on this app",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "toDark": "Dark appearance",
+    "toLight": "Light appearance",
+    "close": "Close"
   },
   "discover": {
     "kicker": "Idea board",

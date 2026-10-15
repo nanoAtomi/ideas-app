@@ -5,7 +5,11 @@
  *
  * Cookies, not localStorage: storage is per origin (ideas.nicasso.de ≠ portal.nicasso.de).
  */
+/** "system" = nothing picked yet: the device decides. */
 export type Theme = 'system' | 'light' | 'dark';
+
+/** Each language in its own words - that's how people find theirs in a list. */
+export const LANGUAGE_NAMES = { de: 'Deutsch', en: 'English' } as const;
 
 export const LANG_COOKIE = 'nicasso-lang';
 const THEME_COOKIE = 'nicasso-theme';
@@ -49,6 +53,18 @@ export function applyTheme(theme: Theme = readTheme()): void {
 export function setTheme(theme: Theme): void {
   writeCookie(THEME_COOKIE, theme === 'system' ? null : theme);
   applyTheme(theme);
+}
+
+/** What is shown right now. */
+export function isDark(): boolean {
+  return document.documentElement.classList.contains('dark');
+}
+
+/** The one appearance button: flips what is shown and keeps it from then on. */
+export function toggleTheme(): Theme {
+  const next = isDark() ? 'light' : 'dark';
+  setTheme(next);
+  return next;
 }
 
 /** Call once at start (main.tsx), before rendering: applies the theme and follows the device in "system". */

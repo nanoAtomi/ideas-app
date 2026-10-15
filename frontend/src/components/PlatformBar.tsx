@@ -1,19 +1,21 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode, type TouchEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { readTheme, setTheme, type Theme } from '../prefs';
+import { isDark, LANGUAGE_NAMES, toggleTheme } from '../prefs';
 
 /*
  * The platform bar every app starts from (blueprint template - copy into
  * `src/components/` and adapt freely; apps may look different over time):
  *
- *   [‹ PORTAL] │ 💡 App name   <nav links>                         (AB)▾
+ *   [‹ PORTAL] │ 💡 App name   <nav links>                         (AB)
  *
  * Left: back to the portal in the platform's wordmark style. Right: the user's avatar
- * opens a menu with name, e-mail, language, appearance, profile, feedback, sign-out.
- * Language and appearance are platform-wide (prefs.ts cookies).
+ * opens the same panel as the portal's - name, e-mail, language (native select: the
+ * iPhone shows its wheel) and one light/dark button, profile, feedback, sign-out. A
+ * popover on wide screens, a swipeable bottom sheet on phones. Language and appearance
+ * are platform-wide (prefs.ts cookies).
  *
  * Needs these texts (de/en): platform.portal, platform.portalTitle, platform.menu,
- * platform.language, platform.theme, platform.themeSystem/Light/Dark,
+ * platform.language, platform.toDark, platform.toLight, platform.close,
  * platform.profile, platform.feedback, platform.signOut.
  */
 
@@ -25,13 +27,6 @@ export interface PlatformUser {
   logoutUrl: string | null;
   feedbackUrl: string | null;
 }
-
-const LANGUAGES = ['de', 'en'] as const;
-const THEMES: { value: Theme; icon: string; label: string }[] = [
-  { value: 'system', icon: '🖥️', label: 'platform.themeSystem' },
-  { value: 'light', icon: '☀️', label: 'platform.themeLight' },
-  { value: 'dark', icon: '🌙', label: 'platform.themeDark' },
-];
 
 /** Class for app entries passed as `menuItems`, so they match the built-in ones. */
 export const menuItemClass = 'flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-sm hover:bg-slate-100 dark:hover:bg-white/10';
@@ -87,16 +82,17 @@ export function PlatformBar({ appName, appIcon, user, nav, navLabel, actions, me
   );
 }
 
+const isPhone = () => !window.matchMedia?.('(min-width: 640px)').matches;
+
 function UserMenu({ user, items }: { user: PlatformUser; items?: ReactNode }) {
-  const { t, i18n } = useTranslation();
-  const [open, setOpen] = useState(false);
-  const [theme, setThemeState] = useState<Theme>(readTheme);
+  const { t } = useTranslation();
+  const [open, setOpen] = useState<'popover' | 'sheet' | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!open) return;
+    if (open !== 'popover') return;
     const close = (event: Event) => {
-      if (event instanceof KeyboardEvent ? event.key === 'Escape' : !ref.current?.contains(event.target as Node)) setOpen(false);
+      if (event instanceof KeyboardEvent ? event.key === 'Escape' : !ref.current?.contains(event.target as Node)) setOpen(null);
     };
     document.addEventListener('pointerdown', close);
     document.addEventListener('keydown', close);
@@ -106,77 +102,212 @@ function UserMenu({ user, items }: { user: PlatformUser; items?: ReactNode }) {
     };
   }, [open]);
 
-  const segment = (active: boolean) =>
-    `flex-1 rounded-lg px-2 py-1.5 text-xs font-semibold transition-colors ${active ? 'bg-white text-slate-900 shadow-sm dark:bg-white/15 dark:text-white' : 'text-slate-500'}`;
-  const item = menuItemClass;
-
   return (
     <div ref={ref} className="relative">
       <button
         type="button"
         aria-label={t('platform.menu')}
-        aria-expanded={open}
-        onClick={() => setOpen(!open)}
+        aria-expanded={open !== null}
+        onClick={() => setOpen(open ? null : isPhone() ? 'sheet' : 'popover')}
         className="grid size-10 place-items-center rounded-full bg-slate-900 text-sm font-semibold text-white ring-offset-2 hover:ring-2 hover:ring-slate-300 dark:bg-white dark:text-slate-900 dark:ring-offset-[#15161b]"
       >
         {initials(user.name)}
       </button>
-      {open && (
-        <div className="absolute right-0 top-12 w-72 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl dark:border-white/10 dark:bg-[#1a1b20]">
-          <div className="flex items-center gap-3 px-3 py-2.5">
-            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-slate-900 text-sm font-semibold text-white dark:bg-white dark:text-slate-900">{initials(user.name)}</span>
-            <span className="min-w-0">
-              <span className="block truncate font-semibold">{user.name}</span>
-              {user.email && <span className="block truncate text-xs text-slate-500">{user.email}</span>}
-            </span>
-          </div>
-          <div className="space-y-2 border-y border-slate-100 px-3 py-3 dark:border-white/10">
-            <p className="text-xs font-semibold text-slate-500">{t('platform.language')}</p>
-            <div className="flex gap-1 rounded-xl bg-slate-100 p-1 dark:bg-white/[0.06]">
-              {LANGUAGES.map((language) => (
-                <button key={language} type="button" aria-pressed={i18n.resolvedLanguage === language} onClick={() => void i18n.changeLanguage(language)} className={segment(i18n.resolvedLanguage === language)}>
-                  {language.toUpperCase()}
-                </button>
-              ))}
-            </div>
-            <p className="pt-1 text-xs font-semibold text-slate-500">{t('platform.theme')}</p>
-            <div className="flex gap-1 rounded-xl bg-slate-100 p-1 dark:bg-white/[0.06]">
-              {THEMES.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  aria-pressed={theme === option.value}
-                  onClick={() => {
-                    setTheme(option.value);
-                    setThemeState(option.value);
-                  }}
-                  className={segment(theme === option.value)}
-                >
-                  <span aria-hidden>{option.icon}</span> {t(option.label)}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="pt-1" onClick={(event) => (event.target as Element).closest('a') && setOpen(false)}>
-            {items}
-            {user.portalUrl && (
-              <a href={`${user.portalUrl}/profile`} className={item}>
-                👤 {t('platform.profile')}
-              </a>
-            )}
-            {user.feedbackUrl && (
-              <a href={user.feedbackUrl} className={item}>
-                💬 {t('platform.feedback')}
-              </a>
-            )}
-            {user.logoutUrl && (
-              <a href={user.logoutUrl} className={`${item} text-red-700 dark:text-red-400`}>
-                ↩ {t('platform.signOut')}
-              </a>
-            )}
-          </div>
+      {open === 'popover' && (
+        <div className="absolute top-12 right-0 w-80 rounded-2xl border border-slate-200 bg-white p-4 shadow-xl dark:border-white/10 dark:bg-[#1a1b20]">
+          <MenuPanel user={user} items={items} onDone={() => setOpen(null)} />
         </div>
       )}
+      {open === 'sheet' && (
+        <BottomSheet label={t('platform.menu')} onClosed={() => setOpen(null)}>
+          {(close) => (
+            <>
+              <MenuPanel user={user} items={items} onDone={close} />
+              <button type="button" onClick={close} className="mt-3 mb-4 min-h-11 w-full rounded-xl bg-slate-100 text-sm font-semibold dark:bg-white/10">
+                {t('platform.close')}
+              </button>
+            </>
+          )}
+        </BottomSheet>
+      )}
     </div>
+  );
+}
+
+/** The portal's profile panel: who, language + appearance, the app's items, profile, feedback, sign-out. */
+function MenuPanel({ user, items, onDone }: { user: PlatformUser; items?: ReactNode; onDone: () => void }) {
+  const { t } = useTranslation();
+  const item = menuItemClass;
+  return (
+    <>
+      <div className="flex items-center gap-3 px-1">
+        <span className="grid size-11 shrink-0 place-items-center rounded-full bg-slate-900 text-sm font-semibold text-white dark:bg-white dark:text-slate-900">{initials(user.name)}</span>
+        <span className="min-w-0">
+          <span className="block truncate font-semibold">{user.name}</span>
+          {user.email && <span className="block truncate text-sm text-slate-500 dark:text-slate-400">{user.email}</span>}
+        </span>
+      </div>
+      <div className="mt-5">
+        <PrefsRow />
+      </div>
+      <div className="mt-4 space-y-0.5 border-t border-slate-100 pt-3 dark:border-white/10" onClick={(event) => (event.target as Element).closest('a') && onDone()}>
+        {items}
+        {user.portalUrl && (
+          <a href={`${user.portalUrl}/profile`} className={item}>
+            👤 {t('platform.profile')}
+          </a>
+        )}
+        {user.feedbackUrl && (
+          <a href={user.feedbackUrl} className={item}>
+            💬 {t('platform.feedback')}
+          </a>
+        )}
+        {user.logoutUrl && (
+          <a href={user.logoutUrl} className={`${item} text-red-700 dark:text-red-400`}>
+            ↩ {t('platform.signOut')}
+          </a>
+        )}
+      </div>
+    </>
+  );
+}
+
+/**
+ * Language as a native select (more languages are just more options) and one button
+ * that flips light/dark - until it is pressed, the device decides.
+ */
+function PrefsRow() {
+  const { t, i18n } = useTranslation();
+  const [dark, setDark] = useState(isDark);
+  const current = (i18n.resolvedLanguage ?? 'de') as keyof typeof LANGUAGE_NAMES;
+  const label = t(dark ? 'platform.toLight' : 'platform.toDark');
+  return (
+    <div className="flex gap-2">
+      <label className="relative flex h-11 min-w-0 flex-1 items-center gap-2.5 rounded-xl bg-slate-100 px-3 text-sm font-medium focus-within:ring-2 focus-within:ring-slate-400/50 dark:bg-white/[0.06]">
+        <span aria-hidden>🌐</span>
+        <span className="flex-1 truncate">{LANGUAGE_NAMES[current] ?? current}</span>
+        <span aria-hidden className="text-slate-400">▾</span>
+        <select
+          aria-label={t('platform.language')}
+          value={current}
+          onChange={(event) => void i18n.changeLanguage(event.target.value)}
+          className="absolute inset-0 h-full w-full cursor-pointer appearance-none opacity-0"
+        >
+          {Object.entries(LANGUAGE_NAMES).map(([code, name]) => (
+            <option key={code} value={code}>
+              {name}
+            </option>
+          ))}
+        </select>
+      </label>
+      <button
+        type="button"
+        aria-label={label}
+        title={label}
+        onClick={() => setDark(toggleTheme() === 'dark')}
+        className="grid size-11 shrink-0 place-items-center rounded-xl bg-slate-100 text-lg transition-colors hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/10"
+      >
+        <span aria-hidden>{dark ? '🌙' : '☀️'}</span>
+      </button>
+    </div>
+  );
+}
+
+/** A pull longer than this, or a quick flick, closes the sheet. */
+const CLOSE_PX = 120;
+const FLICK_PX_PER_MS = 0.5;
+const ANIMATION_MS = 250;
+
+/**
+ * iOS-style bottom sheet (same behaviour as the portal's): locks the page behind it,
+ * follows the finger when pulled down (anywhere while scrolled to the top), closes on
+ * a long pull or a flick and springs back otherwise; tap outside or Escape closes too.
+ */
+function BottomSheet({ label, onClosed, children }: { label: string; onClosed: () => void; children: (close: () => void) => ReactNode }) {
+  const panel = useRef<HTMLDivElement>(null);
+  const [offset, setOffset] = useState(() => window.innerHeight);
+  const [dragging, setDragging] = useState(false);
+  const drag = useRef({ startY: null as number | null, lastY: 0, lastTime: 0, speed: 0, closing: false });
+
+  const close = () => {
+    if (drag.current.closing) return;
+    drag.current.closing = true;
+    setDragging(false);
+    setOffset(panel.current?.offsetHeight || window.innerHeight);
+    window.setTimeout(onClosed, ANIMATION_MS);
+  };
+
+  useEffect(() => {
+    const restore = [document.documentElement, document.body].map((element) => [element, element.style.overflow] as const);
+    restore.forEach(([element]) => (element.style.overflow = 'hidden'));
+    const frame = requestAnimationFrame(() => setOffset(0));
+    const onKey = (event: KeyboardEvent) => event.key === 'Escape' && close();
+    document.addEventListener('keydown', onKey);
+    return () => {
+      cancelAnimationFrame(frame);
+      document.removeEventListener('keydown', onKey);
+      restore.forEach(([element, overflow]) => (element.style.overflow = overflow));
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // touchmove must be able to stop the page from scrolling: a non-passive listener.
+  useEffect(() => {
+    const element = panel.current;
+    if (!element) return;
+    const onMove = (event: globalThis.TouchEvent) => {
+      const state = drag.current;
+      if (state.startY === null || state.closing) return;
+      const y = event.touches[0].clientY;
+      const pulled = y - state.startY;
+      if (pulled > 0) {
+        event.preventDefault();
+        setDragging(true);
+        setOffset(pulled);
+      }
+      const elapsed = event.timeStamp - state.lastTime;
+      if (elapsed > 0) state.speed = (y - state.lastY) / elapsed;
+      state.lastY = y;
+      state.lastTime = event.timeStamp;
+    };
+    element.addEventListener('touchmove', onMove, { passive: false });
+    return () => element.removeEventListener('touchmove', onMove);
+  }, []);
+
+  const start = (event: TouchEvent) => {
+    const y = event.touches[0].clientY;
+    Object.assign(drag.current, { startY: (panel.current?.scrollTop ?? 0) <= 0 ? y : null, lastY: y, lastTime: event.timeStamp, speed: 0 });
+  };
+  const end = () => {
+    const state = drag.current;
+    if (state.startY === null || state.closing) return;
+    state.startY = null;
+    setDragging(false);
+    const height = panel.current?.offsetHeight ?? window.innerHeight;
+    if (offset > Math.min(CLOSE_PX, height * 0.35) || (offset > 10 && state.speed > FLICK_PX_PER_MS)) close();
+    else setOffset(0);
+  };
+
+  const height = panel.current?.offsetHeight || window.innerHeight;
+  return (
+    <>
+      <div className="fixed inset-0 z-40 touch-none bg-black/40" style={{ opacity: Math.max(0, 1 - offset / height) }} onClick={close} />
+      <div
+        ref={panel}
+        role="dialog"
+        aria-modal="true"
+        aria-label={label}
+        className={`fixed inset-x-0 bottom-0 z-50 max-h-[85dvh] overflow-y-auto overscroll-contain rounded-t-3xl bg-white px-5 pb-[env(safe-area-inset-bottom)] shadow-2xl dark:bg-[#16171b] ${dragging ? '' : 'transition-transform duration-250'}`}
+        style={{ transform: `translateY(${offset}px)` }}
+        onTouchStart={start}
+        onTouchEnd={end}
+        onTouchCancel={end}
+      >
+        <div className="sticky top-0 -mx-5 flex justify-center bg-inherit pt-3 pb-4">
+          <div className="h-1.5 w-10 rounded-full bg-slate-300 dark:bg-white/20" />
+        </div>
+        {children(close)}
+      </div>
+    </>
   );
 }

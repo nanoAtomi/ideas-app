@@ -77,16 +77,17 @@ describe('App', () => {
     renderApp('/mine');
     expect(await screen.findByRole('heading', { name: 'My ideas' })).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Account menu' }));
-    expect(screen.getByRole('button', { name: 'EN' })).toHaveAttribute('aria-pressed', 'true');
-    await userEvent.click(screen.getByRole('button', { name: 'DE' }));
+    const language = screen.getByRole('combobox', { name: 'Language' });
+    expect(language).toHaveValue('en');
+    await userEvent.selectOptions(language, 'de');
     expect(await screen.findByRole('heading', { name: 'Meine Ideen' })).toBeInTheDocument();
     expect(document.cookie).toContain('nicasso-lang=de');
 
-    await userEvent.click(screen.getByRole('button', { name: /Dunkel/ }));
+    await userEvent.click(screen.getByRole('button', { name: 'Dunkle Darstellung' }));
     expect(document.documentElement).toHaveClass('dark');
     expect(document.cookie).toContain('nicasso-theme=dark');
-    await userEvent.click(screen.getByRole('button', { name: /System/ }));
-    expect(document.cookie).not.toContain('nicasso-theme');
+    await userEvent.click(screen.getByRole('button', { name: 'Helle Darstellung' }));
+    expect(document.cookie).toContain('nicasso-theme=light');
   });
 
   it('hides platform links outside the gateway', async () => {

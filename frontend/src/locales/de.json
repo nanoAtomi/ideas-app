@@ -20,13 +20,12 @@
     "portalTitle": "Zurück zum App-Portal",
     "menu": "Konto-Menü",
     "language": "Sprache",
-    "theme": "Darstellung",
-    "themeSystem": "System",
-    "themeLight": "Hell",
-    "themeDark": "Dunkel",
     "profile": "Profil bearbeiten",
     "feedback": "Feedback zu dieser App",
-    "signOut": "Abmelden"
+    "signOut": "Abmelden",
+    "toDark": "Dunkle Darstellung",
+    "toLight": "Helle Darstellung",
+    "close": "Schließen"
   },
   "discover": {
     "kicker": "Ideen-Board",
