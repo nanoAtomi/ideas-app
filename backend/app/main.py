@@ -5,11 +5,11 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from . import platform_data
+from . import home_screen, platform_data
 from .api import admin, board, ideas, me
 from .config import settings
 from .db import run_migrations
@@ -85,6 +85,10 @@ class SpaStaticFiles(StaticFiles):
 
     async def get_response(self, path, scope):
         is_asset = path.replace("\\", "/").startswith("assets/")
+        # Quick pages: their own home-screen identity right in the HTML (home_screen.py).
+        own = home_screen.index_html(Path(self.directory), path)
+        if own is not None:
+            return HTMLResponse(own)
         try:
             response = await super().get_response(path, scope)
         except StarletteHTTPException as e:

@@ -19,8 +19,9 @@ export function BottomNav({ isAdmin = false }: { isAdmin?: boolean }) {
         {t('nav.discover')}
       </NavLink>
       {/* Admins: their notebook and the board, one on each side of the big button. */}
+      {/* reloadDocument: a full load, so "Add to Home Screen" on iOS takes the notebook's own icon. */}
       {isAdmin && (
-        <NavLink to="/quick" className={tab}>
+        <NavLink to="/quick" reloadDocument className={tab}>
           <span aria-hidden className="text-xl leading-none">✍️</span>
           {t('quick.short')}
         </NavLink>

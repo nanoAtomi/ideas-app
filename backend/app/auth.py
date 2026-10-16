@@ -73,8 +73,9 @@ def has_role(request: Request, role: str) -> bool:
     """
     if settings.auth_mode == "dev":
         return True
-    groups = request.headers.get("x-auth-request-groups", "")
-    return f"/apps/{APP_SLUG}/{role}" in {g.strip() for g in groups.split(",")}
+    groups = {g.strip() for g in request.headers.get("x-auth-request-groups", "").split(",")}
+    # Superusers have every role in every app (platform docs/access-and-roles.md).
+    return "/superusers" in groups or f"/apps/{APP_SLUG}/{role}" in groups
 
 
 def admin_user(request: Request, user: User = Depends(current_user)) -> User:

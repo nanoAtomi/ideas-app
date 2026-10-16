@@ -18,7 +18,8 @@ def test_export_has_ideas_comments_and_votes(client):
     assert data["user"]["email"] == "alice@example.com"
     assert [i["details"] for i in data["ideas"]] == ["With points"]
     assert data["ideas"][0]["versions"][0]["number"] == 1
-    assert [c["body"] for c in data["comments"]] == ["Me too"]
+    assert [(c["on_idea"], c["body"]) for c in data["comments"]] == [("Something bugs me", "Me too")]
+    assert "id" not in data["ideas"][0]
     assert client.get("/api/platform/users/nobody/export", headers=PORTAL).json() == {}
 
 

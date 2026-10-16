@@ -75,7 +75,7 @@ export function App() {
             </NavLink>
             {me.data.is_admin && (
               <>
-                <NavLink to="/quick" className={navLink}>
+                <NavLink to="/quick" reloadDocument className={navLink}>
                   {t('quick.short')}
                 </NavLink>
                 <NavLink to="/admin" className={navLink}>
@@ -88,7 +88,7 @@ export function App() {
         menuItems={
           me.data.is_admin && (
             <>
-              <Link to="/quick" className={menuItemClass}>
+              <Link to="/quick" reloadDocument className={menuItemClass}>
                 <Icon name="pen" className={menuIconClass} />
                 {t('quick.menu')}
               </Link>

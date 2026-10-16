@@ -5,7 +5,8 @@ calls DELETE first and removes the account only when every app said yes. Called 
 portal-api over the internal network with X-Portal-Secret = GATEWAY_SHARED_SECRET. The
 gateway never sets that header, so a browser can't reach these even with a session.
 
-Deleting removes the person and - through the foreign keys - every idea they wrote
+The export holds what is about the person - their texts, comments, votes - not internal
+ids. Deleting removes the person and - through the foreign keys - every idea they wrote
 (public ones too, with their versions, comments and votes), their comments and votes.
 """
 import hmac
@@ -40,7 +41,6 @@ def export(user: str, db: Session = Depends(get_db)) -> dict:
         "user": {"email": person.email, "name": person.display_name, "since": person.created_at.isoformat()},
         "ideas": [
             {
-                "id": idea.id,
                 **{name: getattr(idea, name) for name in IDEA_FIELDS},
                 "created_at": idea.created_at.isoformat(),
                 "deleted": idea.deleted_at is not None,
@@ -53,11 +53,18 @@ def export(user: str, db: Session = Depends(get_db)) -> dict:
             for idea in ideas
         ],
         "comments": [
-            {"idea_id": c.idea_id, "body": c.body, "created_at": c.created_at.isoformat()}
+            {"on_idea": _title(db.get(Idea, c.idea_id)), "body": c.body, "created_at": c.created_at.isoformat()}
             for c in db.scalars(select(Comment).where(Comment.author_id == person.id).order_by(Comment.id))
         ],
-        "votes": [v.idea_id for v in db.scalars(select(Vote).where(Vote.user_id == person.id))],
+        "votes": [_title(db.get(Idea, v.idea_id)) for v in db.scalars(select(Vote).where(Vote.user_id == person.id))],
     }
+
+
+def _title(idea: Idea | None) -> str:
+    """How a person recognises an idea - its name, else the start of the problem."""
+    if idea is None:
+        return ""
+    return idea.name_idea or (idea.problem[:80] + ("…" if len(idea.problem) > 80 else ""))
 
 
 @router.delete("/{user}", status_code=204, dependencies=[Depends(portal_only)])

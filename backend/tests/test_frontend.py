@@ -33,3 +33,20 @@ def test_privacy_page_is_a_static_page(tmp_path, client):
         assert "Datenschutzhinweise" in c.get("/spa-test/privacy", follow_redirects=True).text
     finally:
         main.app.router.routes.pop()
+
+
+def test_quick_page_brings_its_own_home_screen_identity(tmp_path, client):
+    """iOS reads manifest and icon from the loaded HTML - /quick must carry its own."""
+    (tmp_path / "index.html").write_text(
+        '<link rel="manifest" href="/manifest.webmanifest" crossorigin="use-credentials" />'
+        '<link rel="apple-touch-icon" href="/icons/icon-180.png" />'
+        '<meta name="apple-mobile-web-app-title" content="Ideas" />'
+    )
+    main.app.mount("/spa-test", SpaStaticFiles(directory=tmp_path, html=True))
+    try:
+        c = TestClient(main.app)
+        quick = c.get("/spa-test/quick").text
+        assert 'href="/quick.webmanifest"' in quick and 'content="Idee +"' in quick
+        assert 'href="/manifest.webmanifest"' in c.get("/spa-test/mine").text
+    finally:
+        main.app.router.routes.pop()
