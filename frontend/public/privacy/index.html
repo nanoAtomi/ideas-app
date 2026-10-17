@@ -3,12 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Datenschutz · Privacy · Ideen</title>
+  <title>Datenschutz · Ideen</title>
   <link rel="stylesheet" href="privacy.css">
+  <script src="legal-lang.js" defer></script>
 </head>
 <body>
   <main>
-    <nav aria-label="Navigation"><a href="/">💡 Ideen</a><a href="#en">English</a></nav>
+    <article lang="de" data-title="Datenschutz · Ideen">
+    <nav aria-label="Navigation"><a href="/">💡 Ideen</a><a href="#" data-switch-lang="en">English</a></nav>
 
     <h1>Datenschutzhinweise</h1>
     <p class="updated">Stand: 14. Oktober 2026</p>
@@ -39,9 +41,11 @@
     <h2>Deine Rechte</h2>
     <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung und Widerspruch. Wende dich dafür an den Betreiber. Außerdem kannst du dich bei einer Datenschutz-Aufsichtsbehörde beschweren.</p>
 
-    <hr>
+    </article>
 
-    <h1 id="en">Privacy notice</h1>
+    <article lang="en" data-title="Privacy · Ideas" hidden>
+    <nav aria-label="Navigation"><a href="/">💡 Ideas</a><a href="#" data-switch-lang="de">Deutsch</a></nav>
+    <h1>Privacy notice</h1>
     <p class="updated">Last updated: 14 October 2026</p>
 
     <h2>Controller</h2>
@@ -69,6 +73,7 @@
 
     <h2>Your rights</h2>
     <p>You have the right of access, rectification, erasure, restriction and objection - contact the operator. You may also lodge a complaint with a data protection supervisory authority.</p>
+    </article>
   </main>
 </body>
 </html>
