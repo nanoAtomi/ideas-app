@@ -33,7 +33,8 @@ interface Props {
 export function PlatformBar({ appName, appIcon, user, nav, navLabel, actions, menuItems }: Props) {
   return (
     <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/85 pt-[env(safe-area-inset-top)] backdrop-blur-md dark:border-white/10 dark:bg-[#15161b]/85">
-      <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2">
+      {/* Same width and height as nicasso.de's and the portal's header: the avatar sits in the same spot. */}
+      <div className="mx-auto flex h-16 w-[min(1180px,calc(100%-32px))] items-center gap-3 md:w-[min(1180px,calc(100%-64px))]">
         {user.portalUrl && (
           <>
             <PortalChip url={user.portalUrl} />

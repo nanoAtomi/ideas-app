@@ -110,7 +110,7 @@ export function AccountMenu({
         aria-label={t('platform.menu')}
         aria-expanded={open !== null}
         onClick={() => setOpen(open ? null : isPhone() ? 'sheet' : 'popover')}
-        className={trigger ? 'block w-full text-left' : 'grid size-10 place-items-center rounded-full bg-slate-900 text-sm font-semibold text-white ring-offset-2 hover:ring-2 hover:ring-slate-300 dark:bg-white dark:text-slate-900 dark:ring-offset-[#15161b]'}
+        className={trigger ? 'block w-full text-left' : 'grid size-9 place-items-center rounded-full bg-slate-900 text-sm font-semibold text-white transition-shadow hover:ring-4 hover:ring-slate-200 aria-expanded:ring-4 aria-expanded:ring-slate-200 dark:bg-white dark:text-slate-900 dark:hover:ring-white/10 dark:aria-expanded:ring-white/10'}
       >
         {trigger ? trigger(face) : face}
       </button>
